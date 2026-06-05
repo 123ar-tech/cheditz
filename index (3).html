@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cheditz — Photo, Video & Document Editing</title>
+<meta name="description" content="Cheditz — cinematic photo, video, and document editing on demand. Order online, fast turnaround, pixel-perfect results." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['Fraunces', 'serif'],
+        sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      colors: {
+        ink: '#0a0a0b',
+        bone: '#f5f1ea',
+        amber: '#e6a23c',
+        ember: '#ff6b35',
+      },
+    }
+  }
+}
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  @media (min-width: 768px) { html { font-size: 17px; } }
+  @media (min-width: 1024px) { html { font-size: 18px; } }
+
+  body {
+    background: #0a0a0b;
+    color: #f5f1ea;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Background blobs */
+  .bg-blob {
+    position: fixed; pointer-events: none; z-index: 0;
+    border-radius: 50%; filter: blur(80px); opacity: 0.18;
+  }
+  .bg-blob-1 { width: min(700px, 90vw); height: min(400px, 60vw); background: radial-gradient(circle, #ff6b35, transparent); top: -10%; right: -10%; }
+  .bg-blob-2 { width: min(600px, 80vw); height: min(350px, 50vw); background: radial-gradient(circle, #e6a23c, transparent); top: 30%; left: -15%; }
+  .bg-blob-3 { width: min(500px, 70vw); height: min(300px, 45vw); background: radial-gradient(circle, #ff6b35, transparent); bottom: 10%; right: 20%; opacity: 0.1; }
+
+  /* Grain overlay */
+  .grain {
+    position: fixed; inset: 0; pointer-events: none; z-index: 2;
+    opacity: 0.045; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+  }
+
+  /* Typography */
+  .display { font-family: 'Fraunces', serif; letter-spacing: -0.02em; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Selection */
+  ::selection { background: #ff6b35; color: #0a0a0b; }
+
+  /* Nav */
+  .nav-blur {
+    backdrop-filter: blur(20px) saturate(1.4);
+    background: rgba(10,10,11,0.75);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* Mobile nav */
+  #mobile-nav {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0; transform: translateY(-8px); pointer-events: none;
+  }
+  #mobile-nav.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+  .hamburger-line { display: block; width: 22px; height: 2px; background: #f5f1ea; border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+  #menu-btn.open .hamburger-line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  #menu-btn.open .hamburger-line:nth-child(2) { opacity: 0; }
+  #menu-btn.open .hamburger-line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  /* Buttons */
+  .btn-primary {
+    background: linear-gradient(135deg, #ff6b35 0%, #e6a23c 100%);
+    color: #0a0a0b; font-weight: 700;
+    position: relative; overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .btn-primary::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    transform: translateX(-120%); transition: transform 0.7s ease;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(255,107,53,0.55); }
+  .btn-primary:hover::after { transform: translateX(120%); }
+  .btn-ghost {
+    border: 1px solid rgba(245,241,234,0.22); color: #f5f1ea;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s;
+  }
+  .btn-ghost:hover { background: rgba(245,241,234,0.07); border-color: rgba(245,241,234,0.45); transform: translateY(-2px); }
+
+  /* Cards */
+  .card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .card:hover { border-color: rgba(230,162,60,0.3); box-shadow: 0 0 40px -15px rgba(255,107,53,0.2); }
+
+  /* Service card icon bg */
+  .icon-bg {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(230,162,60,0.1));
+    border: 1px solid rgba(255,107,53,0.2);
+  }
+
+  /* Tick list */
+  .tick-item { display: flex; align-items: flex-start; gap: 0.6rem; }
+  .tick-item::before { content: "▸"; color: #e6a23c; flex-shrink: 0; margin-top: 0.05em; }
+
+  /* Stats strip */
+  .stat-divider { width: 1px; background: rgba(255,255,255,0.1); height: 40px; align-self: center; }
+
+  /* Marquee */
+  .marquee-track {
+    display: flex; gap: 3rem; animation: marquee-scroll 35s linear infinite;
+    width: max-content;
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+  @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Works grid */
+  #works-grid { display: grid; gap: 1.5rem; }
+  @media (min-width: 640px) { #works-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { #works-grid { grid-template-columns: repeat(2, 1fr); max-width: 680px; margin: 0 auto; } }
+
+  .work-card {
+    position: relative;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.45s;
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,0.7);
+  }
+  .work-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 40px 70px -20px rgba(255,107,53,0.3); }
+  .work-card-inner { position: relative; aspect-ratio: 2/3; overflow: hidden; border-radius: 16px; }
+  .work-card-inner img, .work-card-inner video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .work-card-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 1.25rem 1.25rem 1rem;
+    background: linear-gradient(to top, rgba(10,10,11,0.9) 0%, transparent 100%);
+    transform: translateY(4px); opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .work-card:hover .work-card-overlay { opacity: 1; transform: translateY(0); }
+  .work-badge {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(10,10,11,0.7); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px; padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.15em; text-transform: uppercase; color: #e6a23c;
+  }
+
+  /* Form */
+  input, textarea, select {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #f5f1ea; padding: 0.85rem 1rem; border-radius: 10px;
+    width: 100%; font-family: inherit; font-size: 0.95rem;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none; border-color: #e6a23c;
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 0 0 3px rgba(230,162,60,0.12);
+  }
+  select option { background: #1a1a1c; color: #f5f1ea; }
+  label.field { display: block; }
+  label.field > span { display: block; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 0.4rem; }
+
+  /* Contact cards */
+  .contact-card {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 1.5rem; border-radius: 14px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    text-decoration: none; color: inherit;
+  }
+  .contact-card:hover { border-color: rgba(230,162,60,0.35); transform: translateX(4px); box-shadow: 0 8px 32px -12px rgba(255,107,53,0.25); }
+  .contact-icon {
+    width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: rgba(230,162,60,0.1); border: 1px solid rgba(230,162,60,0.15);
+  }
+
+  /* Reveal animation */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* Glow pill */
+  .glow-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,107,53,0.1); border: 1px solid rgba(255,107,53,0.25);
+    border-radius: 999px; padding: 6px 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,241,234,0.7);
+  }
+
+  /* Section labels */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: #e6a23c;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Divider line */
+  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); }
+
+  /* Responsive helpers */
+  .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+  @media (min-width: 640px) { .container { padding: 0 2rem; } }
+  @media (min-width: 1024px) { .container { padding: 0 3rem; } }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #ff6b35, #e6a23c);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+</style>
+</head>
+<body>
+<!-- Background blobs -->
+<div class="bg-blob bg-blob-1" aria-hidden="true"></div>
+<div class="bg-blob bg-blob-2" aria-hidden="true"></div>
+<div class="bg-blob bg-blob-3" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ====== NAV ====== -->
+<header class="fixed top-0 inset-x-0 z-50 nav-blur">
+  <div class="container">
+    <nav class="py-4 flex items-center justify-between gap-4">
+      <!-- Logo -->
+      <a href="#top" class="flex items-center gap-2.5 flex-shrink-0">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ff6b35] to-[#e6a23c] grid place-items-center text-[#0a0a0b] font-black text-lg shadow-lg shadow-ember/30">C</span>
+        <span class="display text-xl font-bold tracking-tight">Cheditz<span class="text-amber">.</span></span>
+      </a>
+
+      <!-- Desktop links -->
+      <ul class="hidden md:flex items-center gap-7 text-sm text-bone/65">
+        <li><a href="#services" class="hover:text-bone transition-colors duration-200">Services</a></li>
+        <li><a href="#works" class="hover:text-bone transition-colors duration-200">Works</a></li>
+        <li><a href="#order" class="hover:text-bone transition-colors duration-200">Order</a></li>
+        <li><a href="#contact" class="hover:text-bone transition-colors duration-200">Contact</a></li>
+      </ul>
+
+      <div class="flex items-center gap-3">
+        <!-- CTA -->
+        <a href="#order" class="btn-primary hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm">
+          Start a project
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <!-- Hamburger -->
+        <button id="menu-btn" class="md:hidden flex flex-col gap-[5px] p-2 -mr-2" aria-label="Toggle menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Mobile nav drawer -->
+  <div id="mobile-nav" class="md:hidden border-t border-white/5 bg-[#0a0a0b]/95 backdrop-blur-xl">
+    <div class="container py-5 flex flex-col gap-1">
+      <a href="#services" class="mobile-nav-link py-3 px-3 rounded-xl text-bone/80 hover:text-bone hover:bg-white/5 transition text-base font-medium" onclick="closeMobileNav()">Services</a>
+      <a href="#works" class="mobile-nav-link py-3 px-3 rounded-xl text-bone/80 hover:text-bone hover:bg-white/5 transition text-base font-medium" onclick="closeMobileNav()">Works</a>
+      <a href="#order" class="mobile-nav-link py-3 px-3 rounded-xl text-bone/80 hover:text-bone hover:bg-white/5 transition text-base font-medium" onclick="closeMobileNav()">Order</a>
+      <a href="#contact" class="mobile-nav-link py-3 px-3 rounded-xl text-bone/80 hover:text-bone hover:bg-white/5 transition text-base font-medium" onclick="closeMobileNav()">Contact</a>
+      <div class="pt-3 border-t border-white/5 mt-2">
+        <a href="#order" class="btn-primary flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold" onclick="closeMobileNav()">
+          Start a project →
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" class="relative z-10">
+
+  <!-- ====== HERO ====== -->
+  <section class="pt-32 sm:pt-40 pb-20 sm:pb-28">
+    <div class="container">
+      <!-- Badge -->
+      <div class="flex items-center gap-3 mb-8 reveal">
+        <span class="glow-pill">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#ff6b35] animate-pulse"></span>
+          Open for commissions · 2026
+        </span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="display font-bold leading-[0.92] reveal" style="font-size: clamp(3rem, 9vw, 7.5rem);">
+        Edits that <em class="not-italic text-amber">linger</em><br class="hidden sm:block"/>
+        <span class="block sm:inline"> long after the</span><br/>
+        scroll.
+      </h1>
+
+      <!-- Sub -->
+      <p class="mt-8 sm:mt-10 max-w-xl text-base sm:text-lg text-bone/65 leading-relaxed reveal">
+        Cheditz is a one-desk editing house for photo, video, and document work.
+        Sharpen frames, colour the mood, polish words — quietly, quickly, on deadline.
+      </p>
+
+      <!-- CTAs -->
+      <div class="mt-10 sm:mt-12 flex flex-wrap gap-3 sm:gap-4 reveal">
+        <a href="#order" class="btn-primary px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-sm uppercase tracking-widest inline-flex items-center gap-2">
+          Place an order
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#works" class="btn-ghost px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-sm uppercase tracking-widest">
+          See the work
+        </a>
+      </div>
+
+      <!-- Brand logo block -->
+      <div class="mt-16 sm:mt-20 reveal">
+        <div style="display:inline-flex;align-items:center;gap:18px;
+                    background:linear-gradient(135deg,rgba(255,107,53,0.08),rgba(230,162,60,0.05));
+                    border:1px solid rgba(255,107,53,0.18);
+                    border-radius:24px;padding:18px 28px;
+                    box-shadow:0 0 60px -20px rgba(255,107,53,0.2);">
+          <!-- Logo mark SVG -->
+          <div style="width:60px;height:60px;flex-shrink:0;position:relative;">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Outer glow ring -->
+              <circle cx="30" cy="30" r="29" stroke="url(#logoRing)" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.6"/>
+              <!-- Background circle -->
+              <circle cx="30" cy="30" r="26" fill="url(#logoBg)"/>
+              <!-- Film frame top holes -->
+              <rect x="10" y="11" width="6" height="4" rx="1.5" fill="rgba(10,10,11,0.7)"/>
+              <rect x="19" y="11" width="6" height="4" rx="1.5" fill="rgba(10,10,11,0.7)"/>
+              <rect x="35" y="11" width="6" height="4" rx="1.5" fill="rgba(10,10,11,0.7)"/>
+              <rect x="44" y="11" width="6" height="4" rx="1.5" fill="rgba(10,10,11,0.7)"/>
+              <!-- Film frame bottom holes -->
+              <rect x="10" y="45" width="6" height="4" rx="1.5" fill="rgba(10,10,11,0.7)"/>
+              <rect x="19" y="45" width="6" height="4" rx="1.5" fill="rgba(10,10,11,0.7)"/>
+              <rect x="35" y="45" width="6" height="4" rx="1.5" fill="rgba(10,10,11,0.7)"/>
+              <rect x="44" y="45" width="6" height="4" rx="1.5" fill="rgba(10,10,11,0.7)"/>
+              <!-- Big C letterform -->
+              <text x="30" y="38" text-anchor="middle" font-family="Fraunces,serif" font-size="26" font-weight="900" fill="#0a0a0b" letter-spacing="-1">C</text>
+              <!-- Scissors snip accent -->
+              <circle cx="48" cy="42" r="4.5" fill="#0a0a0b" opacity="0.85"/>
+              <path d="M46.5 40.5 L49.5 43.5 M49.5 40.5 L46.5 43.5" stroke="#e6a23c" stroke-width="1.4" stroke-linecap="round"/>
+              <!-- Gradients -->
+              <defs>
+                <linearGradient id="logoBg" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff6b35"/>
+                  <stop offset="100%" stop-color="#e6a23c"/>
+                </linearGradient>
+                <linearGradient id="logoRing" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff6b35"/>
+                  <stop offset="100%" stop-color="#e6a23c"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+
+          <!-- Wordmark -->
+          <div>
+            <div style="
+              font-family:'Fraunces',serif;
+              font-size:clamp(2rem,5vw,3rem);
+              font-weight:900;
+              letter-spacing:-0.03em;
+              line-height:1;
+              background:linear-gradient(135deg,#ffffff 0%,#ff6b35 50%,#e6a23c 100%);
+              -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+              background-clip:text;">Cheditz</div>
+            <div style="
+              font-family:'JetBrains Mono',monospace;
+              font-size:0.62rem;
+              letter-spacing:0.22em;
+              text-transform:uppercase;
+              color:rgba(245,241,234,0.45);
+              margin-top:4px;">Photo · Video · Document</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== MARQUEE STRIP ====== -->
+  <div class="py-5 border-y border-white/5 overflow-hidden">
+    <div class="marquee-track select-none" aria-hidden="true">
+      <!-- Repeated twice for seamless loop -->
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Photoshop</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Premiere Pro</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">After Effects</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">InDesign</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Illustrator</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">DaVinci Resolve</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Lightroom</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Figma</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <!-- duplicate -->
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Photoshop</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Premiere Pro</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">After Effects</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">InDesign</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Illustrator</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">DaVinci Resolve</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Lightroom</span>
+      <span class="text-amber/40 text-xs">◆</span>
+      <span class="mono text-xs tracking-[0.2em] uppercase text-bone/35">Figma</span>
+      <span class="text-amber/40 text-xs">◆</span>
+    </div>
+  </div>
+
+  <!-- ====== SERVICES ====== -->
+  <section id="services" class="py-24 sm:py-32">
+    <div class="container">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14 sm:mb-16 reveal">
+        <div>
+          <div class="section-label">01 — Services</div>
+          <h2 class="display font-bold leading-tight" style="font-size: clamp(2.2rem, 5vw, 3.8rem);">Three crafts.<br/>One steady hand.</h2>
+        </div>
+        <p class="max-w-sm text-bone/55 text-sm sm:text-base leading-relaxed">Order any one — or stack them. Pricing scales with scope; quote arrives within hours.</p>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+
+        <!-- Poster -->
+        <article class="card rounded-2xl p-6 sm:p-8 reveal group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="icon-bg">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e6a23c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+              </svg>
+            </div>
+            <span class="mono text-[10px] tracking-widest uppercase text-amber/60">/poster</span>
+          </div>
+          <h3 class="display font-bold mb-3" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem);">Poster Editing</h3>
+          <p class="text-bone/65 leading-relaxed mb-6 text-sm sm:text-base">Event flyers, movie-style posters, product launches, social posts, and brand campaign artwork — designed and finished print-ready.</p>
+          <ul class="text-sm text-bone/65 space-y-2.5">
+            <li class="tick-item">Event &amp; function posters</li>
+            <li class="tick-item">Movie / cinematic style posters</li>
+            <li class="tick-item">Product &amp; sale flyers</li>
+            <li class="tick-item">Social posts &amp; story sets</li>
+          </ul>
+          <div class="mt-8 pt-5 border-t border-white/5 flex items-center justify-between">
+            <span class="mono text-xs text-bone/45">From ₹10 / poster</span>
+            <a href="#order" class="mono text-xs text-amber hover:text-amber/80 transition">Order →</a>
+          </div>
+        </article>
+
+        <!-- Video -->
+        <article class="card rounded-2xl p-6 sm:p-8 reveal group" style="transition-delay:80ms">
+          <div class="flex items-start justify-between mb-6">
+            <div class="icon-bg">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e6a23c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5,3 19,12 5,21"/><rect x="19" y="3" width="2" height="18" rx="1"/>
+              </svg>
+            </div>
+            <span class="mono text-[10px] tracking-widest uppercase text-amber/60">/video</span>
+          </div>
+          <h3 class="display font-bold mb-3" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem);">Video Editing</h3>
+          <p class="text-bone/65 leading-relaxed mb-6 text-sm sm:text-base">Reels, shorts, long-form cuts, sound design, motion titles, and end-to-end colour grading for narrative and brand pieces.</p>
+          <ul class="text-sm text-bone/65 space-y-2.5">
+            <li class="tick-item">Instagram Reels &amp; YouTube Shorts</li>
+            <li class="tick-item">Long-form narrative cuts</li>
+            <li class="tick-item">Motion titles &amp; lower thirds</li>
+            <li class="tick-item">Full colour grading</li>
+          </ul>
+          <div class="mt-8 pt-5 border-t border-white/5 flex items-center justify-between">
+            <span class="mono text-xs text-bone/45">From ₹20 / minute</span>
+            <a href="#order" class="mono text-xs text-amber hover:text-amber/80 transition">Order →</a>
+          </div>
+        </article>
+
+        <!-- Document -->
+        <article class="card rounded-2xl p-6 sm:p-8 reveal sm:col-span-2 lg:col-span-1" style="transition-delay:160ms">
+          <div class="flex items-start justify-between mb-6">
+            <div class="icon-bg">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e6a23c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/>
+              </svg>
+            </div>
+            <span class="mono text-[10px] tracking-widest uppercase text-amber/60">/document</span>
+          </div>
+          <h3 class="display font-bold mb-3" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem);">Document Editing</h3>
+          <p class="text-bone/65 leading-relaxed mb-6 text-sm sm:text-base">Proofreading, copy editing, layout in InDesign/Word, formatting for theses, ebooks, pitch decks, and reports.</p>
+          <ul class="text-sm text-bone/65 space-y-2.5">
+            <li class="tick-item">Proofreading &amp; line editing</li>
+            <li class="tick-item">Thesis &amp; manuscript formatting</li>
+            <li class="tick-item">Pitch decks &amp; one-pagers</li>
+            <li class="tick-item">Ebook layout (EPUB / PDF)</li>
+          </ul>
+          <div class="mt-8 pt-5 border-t border-white/5 flex items-center justify-between">
+            <span class="mono text-xs text-bone/45">From ₹20 / word</span>
+            <a href="#order" class="mono text-xs text-amber hover:text-amber/80 transition">Order →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== WORKS ====== -->
+  <section id="works" class="py-24 sm:py-32 border-t border-white/5">
+    <div class="container">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14 reveal">
+        <div>
+          <div class="section-label">02 — Selected works</div>
+          <h2 class="display font-bold leading-tight" style="font-size: clamp(2.2rem, 5vw, 3.8rem);">Recent<br/>commissions.</h2>
+        </div>
+        <p class="max-w-sm text-bone/55 text-sm sm:text-base leading-relaxed">A small sample. Full portfolio ships on request — just ask in the contact form.</p>
+      </div>
+
+      <!-- Grid injected by JS -->
+      <div id="works-grid"></div>
+    </div>
+  </section>
+
+  <!-- ====== ORDER ====== -->
+  <section id="order" class="py-24 sm:py-32 border-t border-white/5">
+    <div class="container">
+      <div class="grid lg:grid-cols-5 gap-10 sm:gap-14">
+        <!-- Left info -->
+        <div class="lg:col-span-2 reveal">
+          <div class="section-label">03 — Order</div>
+          <h2 class="display font-bold leading-tight mb-6" style="font-size: clamp(2.2rem, 5vw, 3.8rem);">Place<br/>an order.</h2>
+          <p class="text-bone/60 leading-relaxed mb-8 text-sm sm:text-base">
+            Fill the brief and we'll reply with a quote and timeline within a few hours.
+            For files over 25&nbsp;MB, drop a WeTransfer / Drive link in the notes.
+          </p>
+          <ul class="text-sm text-bone/65 space-y-3">
+            <li class="tick-item">Free quote within hours</li>
+            <li class="tick-item">Two revision rounds included</li>
+            <li class="tick-item">Rush delivery available</li>
+            <li class="tick-item">NDA on request</li>
+          </ul>
+        </div>
+
+        <!-- Form -->
+        <form id="order-form" class="lg:col-span-3 card rounded-2xl p-6 sm:p-8 space-y-5 reveal">
+          <div class="grid sm:grid-cols-2 gap-5">
+            <label class="field"><span>Your name</span><input name="name" required type="text" placeholder="Jane Doe" /></label>
+            <label class="field"><span>Email</span><input name="email" required type="email" placeholder="you@studio.com" /></label>
+          </div>
+          <label class="field">
+            <span>Service</span>
+            <select name="service" required>
+              <option value="" disabled selected>Choose a service…</option>
+              <option>Poster editing</option>
+              <option>Video editing</option>
+              <option>Document editing</option>
+              <option>Mixed / not sure yet</option>
+            </select>
+          </label>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <label class="field">
+              <span>Deadline</span>
+              <select name="deadline" required>
+                <option value="" disabled selected>How soon?</option>
+                <option>Rush — within 24h</option>
+                <option>Within 3 days</option>
+                <option>Within a week</option>
+                <option>Flexible</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Budget (INR)</span>
+              <select name="budget" required>
+                <option value="" disabled selected>Pick a range…</option>
+                <option>Under ₹25</option>
+                <option>₹5 – ₹10</option>
+                <option>₹10 – ₹15</option>
+                <option>₹15 – ₹20</option>
+              </select>
+            </label>
+          </div>
+          <label class="field"><span>Project brief</span><textarea name="brief" rows="5" required placeholder="Tell us about the scope, references, file links, and anything that matters."></textarea></label>
+          <button type="submit" class="btn-primary w-full py-4 rounded-full uppercase tracking-widest text-sm inline-flex items-center justify-center gap-2">
+            Send brief
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p class="text-xs text-bone/35 text-center">This opens your email client with the brief pre-filled. No data is stored.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CONTACT ====== -->
+  <section id="contact" class="py-24 sm:py-32 border-t border-white/5">
+    <div class="container">
+      <div class="grid lg:grid-cols-2 gap-12 sm:gap-16 items-start">
+        <!-- Left -->
+        <div class="reveal">
+          <div class="section-label">04 — Contact</div>
+          <h2 class="display font-bold leading-[0.92] mb-6" style="font-size: clamp(2.5rem, 6vw, 5rem);">
+            Let's make<br/>something<br/><em class="not-italic text-amber">unforgettable.</em>
+          </h2>
+          <p class="text-bone/60 max-w-md leading-relaxed text-sm sm:text-base">Quick questions, partnership ideas, or just to say hi — the inbox is always open.</p>
+        </div>
+
+        <!-- Right — contact cards -->
+        <div class="space-y-3 reveal">
+          <!-- Email -->
+          <a href="mailto:cheditz94@gmail.com" class="contact-card">
+            <div class="flex items-center gap-4">
+              <div class="contact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e6a23c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/>
+                </svg>
+              </div>
+              <div>
+                <div class="mono text-[10px] uppercase tracking-widest text-bone/40 mb-1">Email</div>
+                <div class="display text-lg sm:text-xl font-semibold">cheditz94@gmail.com</div>
+              </div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-amber flex-shrink-0 group-hover:translate-x-1 transition-transform"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/cheditz1?igsh=bXcyYXgzZ2l2Nm8w" target="_blank" rel="noopener noreferrer" class="contact-card">
+            <div class="flex items-center gap-4">
+              <div class="contact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e6a23c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#e6a23c"/>
+                </svg>
+              </div>
+              <div>
+                <div class="mono text-[10px] uppercase tracking-widest text-bone/40 mb-1">Instagram</div>
+                <div class="display text-lg sm:text-xl font-semibold">@cheditz1</div>
+              </div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-amber flex-shrink-0"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+
+          <!-- Order form shortcut -->
+          <a href="#order" class="contact-card">
+            <div class="flex items-center gap-4">
+              <div class="contact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e6a23c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="mono text-[10px] uppercase tracking-widest text-bone/40 mb-1">Briefing form</div>
+                <div class="display text-lg sm:text-xl font-semibold">Skip to order</div>
+              </div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-amber flex-shrink-0"><path d="M10 4V16M4 10l6-6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+
+          <!-- Hours -->
+          <div class="card rounded-2xl p-5 sm:p-6">
+            <div class="flex items-start gap-4">
+              <div class="contact-icon mt-0.5">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e6a23c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
+                </svg>
+              </div>
+              <div>
+                <div class="mono text-[10px] uppercase tracking-widest text-bone/40 mb-1">Working hours</div>
+                <div class="text-bone/80 text-sm sm:text-base">Mon — Sat · 9:00 – 19:00 (GMT)</div>
+                <div class="text-bone/45 text-xs sm:text-sm mt-0.5">Replies usually within 4 hours.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== WORKS MANAGER (Admin Panel) ====== -->
+  <!-- Floating trigger button -->
+  <button id="admin-btn" title="Manage Works" aria-label="Open works manager"
+    style="position:fixed;bottom:24px;right:24px;z-index:200;width:52px;height:52px;border-radius:50%;
+           background:linear-gradient(135deg,#ff6b35,#e6a23c);color:#0a0a0b;
+           box-shadow:0 8px 30px rgba(255,107,53,0.45);border:none;cursor:pointer;
+           display:flex;align-items:center;justify-content:center;
+           transition:transform .25s,box-shadow .25s;font-size:22px;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+  <!-- Overlay backdrop -->
+  <div id="admin-overlay" style="position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.7);
+       backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s;"></div>
+
+  <!-- Works Manager Panel -->
+  <div id="admin-panel" style="
+    position:fixed;top:0;right:0;bottom:0;z-index:400;
+    width:min(480px,100vw);
+    background:linear-gradient(180deg,#111113,#0d0d0f);
+    border-left:1px solid rgba(255,255,255,0.08);
+    display:flex;flex-direction:column;
+    transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+    overflow:hidden;">
+
+    <!-- Panel header -->
+    <div style="padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.06);
+         display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
+             text-transform:uppercase;color:#e6a23c;margin-bottom:4px;">Works Manager</div>
+        <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;">Manage Portfolio</div>
+      </div>
+      <button id="admin-close" aria-label="Close panel"
+        style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);
+               background:rgba(255,255,255,0.05);color:#f5f1ea;cursor:pointer;
+               display:flex;align-items:center;justify-content:center;transition:background .2s;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
+      </button>
+    </div>
+
+    <!-- Scrollable body -->
+    <div style="flex:1;overflow-y:auto;padding:20px 24px;">
+
+      <!-- Add new work form -->
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+           border-radius:16px;padding:20px;margin-bottom:24px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;
+             text-transform:uppercase;color:#e6a23c;margin-bottom:16px;">+ Add new work</div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;" id="add-work-form">
+          <div>
+            <label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px;">Title *</label>
+            <input id="w-title" type="text" placeholder="e.g. Brand Poster" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f5f1ea;padding:10px 12px;border-radius:8px;width:100%;font-family:'Inter',sans-serif;font-size:.9rem;transition:border-color .2s;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px;">Subtitle</label>
+            <input id="w-sub" type="text" placeholder="e.g. Client name · Project type" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f5f1ea;padding:10px 12px;border-radius:8px;width:100%;font-family:'Inter',sans-serif;font-size:.9rem;transition:border-color .2s;" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px;">Category *</label>
+              <select id="w-cat" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f5f1ea;padding:10px 12px;border-radius:8px;width:100%;font-family:'Inter',sans-serif;font-size:.9rem;-webkit-appearance:none;">
+                <option value="Poster">Poster</option>
+                <option value="Video">Video</option>
+                <option value="Document">Document</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px;">Meta / Tag</label>
+              <input id="w-meta" type="text" placeholder="e.g. A2 print" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f5f1ea;padding:10px 12px;border-radius:8px;width:100%;font-family:'Inter',sans-serif;font-size:.9rem;transition:border-color .2s;" />
+            </div>
+          </div>
+          <!-- Media source tabs -->
+          <div>
+            <label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Media source</label>
+            <div style="display:flex;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:3px;gap:3px;">
+              <button type="button" id="tab-url"
+                onclick="switchMediaTab('url')"
+                style="flex:1;padding:7px 10px;border-radius:7px;border:none;cursor:pointer;font-size:.8rem;font-family:'Inter',sans-serif;font-weight:600;transition:background .2s,color .2s;
+                       background:linear-gradient(135deg,#ff6b35,#e6a23c);color:#0a0a0b;">
+                🔗 Paste URL
+              </button>
+              <button type="button" id="tab-file"
+                onclick="switchMediaTab('file')"
+                style="flex:1;padding:7px 10px;border-radius:7px;border:none;cursor:pointer;font-size:.8rem;font-family:'Inter',sans-serif;font-weight:600;transition:background .2s,color .2s;
+                       background:transparent;color:rgba(245,241,234,0.5);">
+                📁 Upload File
+              </button>
+            </div>
+          </div>
+
+          <!-- Media type (image/video) — shown in both tabs -->
+          <div style="display:flex;gap:16px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.85rem;color:#ccc;">
+              <input type="radio" name="w-type" value="image" id="w-type-image" checked style="accent-color:#e6a23c;width:auto;" /> Image
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.85rem;color:#ccc;">
+              <input type="radio" name="w-type" value="video" id="w-type-video" style="accent-color:#e6a23c;width:auto;" /> Video
+            </label>
+          </div>
+
+          <!-- URL input panel -->
+          <div id="media-url-panel">
+            <label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px;" id="w-url-label">Image URL *</label>
+            <input id="w-url" type="text" placeholder="https://... or filename.jpg"
+              style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f5f1ea;padding:10px 12px;border-radius:8px;width:100%;font-family:'Inter',sans-serif;font-size:.9rem;transition:border-color .2s;" />
+            <div style="font-size:11px;color:#666;margin-top:5px;" id="w-url-hint">Paste a hosted image link (CDN, Google Drive, Cloudinary…)</div>
+          </div>
+
+          <!-- File upload panel -->
+          <div id="media-file-panel" style="display:none;">
+            <label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px;" id="w-file-label">Choose image file *</label>
+            <!-- Drop zone -->
+            <div id="drop-zone"
+              onclick="document.getElementById('w-file-input').click()"
+              style="border:2px dashed rgba(230,162,60,0.3);border-radius:12px;padding:24px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:rgba(255,255,255,0.02);"
+              ondragover="event.preventDefault();this.style.borderColor='#e6a23c';this.style.background='rgba(230,162,60,0.06)';"
+              ondragleave="this.style.borderColor='rgba(230,162,60,0.3)';this.style.background='rgba(255,255,255,0.02)';"
+              ondrop="handleFileDrop(event)">
+              <div style="font-size:1.8rem;margin-bottom:8px;">📂</div>
+              <div style="font-size:.85rem;color:rgba(245,241,234,0.6);font-weight:500;">Click to browse or drag &amp; drop</div>
+              <div style="font-size:.75rem;color:#666;margin-top:4px;" id="file-type-hint">JPG, PNG, WEBP, GIF supported</div>
+            </div>
+            <input id="w-file-input" type="file" accept="image/*" style="display:none;" onchange="handleFileSelect(event)" />
+            <!-- Preview -->
+            <div id="file-preview" style="display:none;margin-top:10px;border-radius:10px;overflow:hidden;position:relative;background:#1a1a1c;">
+              <img id="file-preview-img" style="width:100%;max-height:160px;object-fit:cover;display:block;" />
+              <video id="file-preview-vid" muted autoplay loop playsinline style="width:100%;max-height:160px;object-fit:cover;display:none;"></video>
+              <button type="button" onclick="clearFilePreview()"
+                style="position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.15);color:#f5f1ea;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
+              <div id="file-preview-name" style="font-size:.75rem;color:#888;padding:6px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+            </div>
+            <div style="font-size:11px;color:#555;margin-top:6px;" id="file-storage-note">Images are stored as base64 in your browser (persists). Videos are session-only — use URL tab for videos.</div>
+          </div>
+          <div id="w-error" style="display:none;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.25);border-radius:8px;padding:8px 12px;font-size:.82rem;color:#ff8080;"></div>
+          <button id="w-add-btn"
+            style="background:linear-gradient(135deg,#ff6b35,#e6a23c);color:#0a0a0b;font-weight:700;
+                   padding:11px;border-radius:10px;border:none;cursor:pointer;font-size:.9rem;
+                   font-family:'Inter',sans-serif;letter-spacing:.05em;
+                   transition:transform .2s,box-shadow .2s;margin-top:4px;">
+            Add to Works ↗
+          </button>
+        </div>
+      </div>
+
+      <!-- Existing works list -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;
+             text-transform:uppercase;color:#888;margin-bottom:14px;">Current works</div>
+        <div id="works-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+    </div>
+
+    <!-- Panel footer note -->
+    <div style="padding:14px 24px;border-top:1px solid rgba(255,255,255,0.06);flex-shrink:0;">
+      <div style="font-size:11px;color:#555;text-align:center;">
+        Works are saved in your browser. To make them permanent, export the HTML.
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="py-10 sm:py-12 border-t border-white/5">
+    <div class="container">
+      <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-center justify-between text-sm text-bone/35">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-[#ff6b35] to-[#e6a23c] grid place-items-center text-[#0a0a0b] font-black text-xs">C</span>
+          <span>© 2026 Cheditz. Hand-cut in the dark.</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="#services" class="hover:text-bone/70 transition">Services</a>
+          <a href="#works" class="hover:text-bone/70 transition">Works</a>
+          <a href="#contact" class="hover:text-bone/70 transition">Contact</a>
+        </div>
+        <div class="mono text-xs">v2.0 · polished 06.2026</div>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+// =============================================
+// MOBILE NAV
+// =============================================
+const menuBtn = document.getElementById('menu-btn');
+const mobileNav = document.getElementById('mobile-nav');
+menuBtn.addEventListener('click', () => {
+  const isOpen = mobileNav.classList.toggle('open');
+  menuBtn.classList.toggle('open', isOpen);
+  menuBtn.setAttribute('aria-expanded', isOpen);
+});
+function closeMobileNav() {
+  mobileNav.classList.remove('open');
+  menuBtn.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded', false);
+}
+
+// =============================================
+// WORKS DATA  — default portfolio entries
+// =============================================
+const DEFAULT_WORKS = [
+  {
+    id: 'default-1',
+    title: "Vande Bharat",
+    sub: "Nagercoil → Chennai",
+    cat: "Poster",
+    meta: "Rail launch · A2 print",
+    type: "image",
+    url: "https://miaoda-conversation-file.s3cdn.medo.dev/user-c4hvi7diyakg/app-c4hvyv74mdxd/20260605/Vande Bharat Nagercoil to Chennai Poster.png"
+  },
+  {
+    id: 'default-2',
+    title: "Video Reel",
+    sub: "Brand edit",
+    cat: "Video",
+    meta: "Short-form content",
+    type: "video",
+    url: "SaveClip.App_AQP09zJlcIfNJhDF4_B10bgqj1kYssdMxVBFrfhFwK2VjldaCmHXTdUyY5z_dEFpKwgX4JH8yYtIo5zQZf2XeYLXQmuU4s3_IufKtJk.mp4"
+  }
+];
+
+function loadWorks() {
+  try {
+    const saved = localStorage.getItem('cheditz_works');
+    return saved ? JSON.parse(saved) : DEFAULT_WORKS;
+  } catch { return DEFAULT_WORKS; }
+}
+
+function saveWorks(arr) {
+  try { localStorage.setItem('cheditz_works', JSON.stringify(arr)); } catch {}
+}
+
+// =============================================
+// RENDER WORKS GRID
+// =============================================
+function buildCard(w, i) {
+  if (w.type === 'video') {
+    return `
+    <article class="work-card reveal" data-id="${w.id}" style="transition-delay:${i * 80}ms">
+      <div class="work-card-inner">
+        <video src="${escHtml(w.url)}" autoplay muted loop playsinline></video>
+        <span class="work-badge">${escHtml(w.cat)}</span>
+        <div class="work-card-overlay">
+          <div class="mono text-[10px] uppercase tracking-widest text-bone/50 mb-1">${escHtml(w.meta)}</div>
+          <div class="display text-lg font-bold text-bone">${escHtml(w.title)}</div>
+          <div class="display italic text-sm text-amber">${escHtml(w.sub)}</div>
+        </div>
+      </div>
+    </article>`;
+  }
+  return `
+  <article class="work-card reveal" data-id="${w.id}" style="transition-delay:${i * 80}ms">
+    <div class="work-card-inner">
+      <img src="${escHtml(w.url)}" alt="${escHtml(w.title)}" loading="lazy" />
+      <span class="work-badge">${escHtml(w.cat)}</span>
+      <div class="work-card-overlay">
+        <div class="mono text-[10px] uppercase tracking-widest text-bone/50 mb-1">${escHtml(w.meta)}</div>
+        <div class="display text-lg font-bold text-bone">${escHtml(w.title)}</div>
+        <div class="display italic text-sm text-amber">${w.sub ? '— ' + escHtml(w.sub) : ''}</div>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderGrid() {
+  const works = loadWorks();
+  const grid = document.getElementById('works-grid');
+  grid.innerHTML = works.length
+    ? works.map((w, i) => buildCard(w, i)).join('')
+    : `<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:rgba(245,241,234,0.3);font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;">No works yet — add one with the + button</div>`;
+
+  // Re-observe new cards for scroll reveal
+  grid.querySelectorAll('.reveal').forEach(el => {
+    el.classList.remove('in');
+    io.observe(el);
+  });
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// =============================================
+// SCROLL REVEAL
+// =============================================
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Initial render
+renderGrid();
+
+// =============================================
+// WORKS MANAGER PANEL
+// =============================================
+const adminBtn    = document.getElementById('admin-btn');
+const adminPanel  = document.getElementById('admin-panel');
+const adminOverlay = document.getElementById('admin-overlay');
+const adminClose  = document.getElementById('admin-close');
+
+function openAdmin() {
+  adminPanel.style.transform  = 'translateX(0)';
+  adminOverlay.style.opacity  = '1';
+  adminOverlay.style.pointerEvents = 'all';
+  document.body.style.overflow = 'hidden';
+  renderWorksList();
+}
+function closeAdmin() {
+  adminPanel.style.transform  = 'translateX(100%)';
+  adminOverlay.style.opacity  = '0';
+  adminOverlay.style.pointerEvents = 'none';
+  document.body.style.overflow = '';
+}
+
+adminBtn.addEventListener('click', openAdmin);
+adminClose.addEventListener('click', closeAdmin);
+adminOverlay.addEventListener('click', closeAdmin);
+adminBtn.addEventListener('mouseenter', () => {
+  adminBtn.style.transform = 'scale(1.1)';
+  adminBtn.style.boxShadow = '0 12px 36px rgba(255,107,53,0.6)';
+});
+adminBtn.addEventListener('mouseleave', () => {
+  adminBtn.style.transform = 'scale(1)';
+  adminBtn.style.boxShadow = '0 8px 30px rgba(255,107,53,0.45)';
+});
+
+// ---- Media source tab switcher ----
+let currentMediaTab = 'url';    // 'url' | 'file'
+let pendingFileData = null;     // { dataUrl, objectUrl, isVideo }
+
+function switchMediaTab(tab) {
+  currentMediaTab = tab;
+  const urlPanel  = document.getElementById('media-url-panel');
+  const filePanel = document.getElementById('media-file-panel');
+  const tabUrl    = document.getElementById('tab-url');
+  const tabFile   = document.getElementById('tab-file');
+  const activeStyle  = 'background:linear-gradient(135deg,#ff6b35,#e6a23c);color:#0a0a0b;';
+  const inactiveStyle = 'background:transparent;color:rgba(245,241,234,0.5);';
+
+  if (tab === 'url') {
+    urlPanel.style.display  = 'block';
+    filePanel.style.display = 'none';
+    tabUrl.style.cssText  += activeStyle;
+    tabFile.style.cssText += inactiveStyle;
+  } else {
+    urlPanel.style.display  = 'none';
+    filePanel.style.display = 'block';
+    tabUrl.style.cssText  += inactiveStyle;
+    tabFile.style.cssText += activeStyle;
+  }
+  syncFileAccept();
+}
+
+// ---- Media type radio — update labels and file accept ----
+document.querySelectorAll('input[name="w-type"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const isVideo = document.getElementById('w-type-video').checked;
+    document.getElementById('w-url-label').textContent  = isVideo ? 'Video URL / filename *' : 'Image URL *';
+    document.getElementById('w-url-hint').textContent   = isVideo
+      ? 'Paste a hosted video link or filename if in the same folder'
+      : 'Paste a hosted image link (CDN / Drive / Cloudinary…)';
+    document.getElementById('w-url').placeholder = isVideo ? 'https://... or reel.mp4' : 'https://... or image.jpg';
+    document.getElementById('w-file-label').textContent = isVideo ? 'Choose video file *' : 'Choose image file *';
+    document.getElementById('file-type-hint').textContent = isVideo
+      ? 'MP4, MOV, WEBM supported (session-only storage)'
+      : 'JPG, PNG, WEBP, GIF supported';
+    document.getElementById('file-storage-note').textContent = isVideo
+      ? '⚠ Videos are session-only (blob URL). For permanent storage use the URL tab.'
+      : 'Images are stored as base64 in your browser (persists after refresh).';
+    clearFilePreview();
+    syncFileAccept();
+  });
+});
+
+function syncFileAccept() {
+  const isVideo = document.getElementById('w-type-video').checked;
+  document.getElementById('w-file-input').accept = isVideo ? 'video/*' : 'image/*';
+}
+
+// ---- Drop zone ----
+function handleFileDrop(e) {
+  e.preventDefault();
+  const dz = document.getElementById('drop-zone');
+  dz.style.borderColor = 'rgba(230,162,60,0.3)';
+  dz.style.background  = 'rgba(255,255,255,0.02)';
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+
+function processFile(file) {
+  const isVideo = file.type.startsWith('video/');
+  const isImage = file.type.startsWith('image/');
+
+  if (!isImage && !isVideo) {
+    showErr('Please select an image or video file.');
+    return;
+  }
+
+  // Auto-switch media type radio to match file
+  document.getElementById(isVideo ? 'w-type-video' : 'w-type-image').checked = true;
+  document.querySelectorAll('input[name="w-type"]').forEach(r => r.dispatchEvent(new Event('change')));
+
+  const previewEl  = document.getElementById('file-preview');
+  const imgEl      = document.getElementById('file-preview-img');
+  const vidEl      = document.getElementById('file-preview-vid');
+  const nameEl     = document.getElementById('file-preview-name');
+
+  if (isImage) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      pendingFileData = { dataUrl: ev.target.result, isVideo: false };
+      imgEl.src = ev.target.result;
+      imgEl.style.display = 'block';
+      vidEl.style.display = 'none';
+      previewEl.style.display = 'block';
+      nameEl.textContent = `${file.name} · ${(file.size / 1024).toFixed(0)} KB`;
+      if (file.size > 3 * 1024 * 1024) {
+        showErr('⚠ Image is over 3 MB — it may fail to save in localStorage. Consider using a URL instead.');
+      } else {
+        document.getElementById('w-error').style.display = 'none';
+      }
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // Video — blob URL (session only)
+    const blobUrl = URL.createObjectURL(file);
+    pendingFileData = { dataUrl: blobUrl, isVideo: true, blobUrl };
+    vidEl.src = blobUrl;
+    vidEl.style.display = 'block';
+    imgEl.style.display = 'none';
+    previewEl.style.display = 'block';
+    nameEl.textContent = `${file.name} · session only`;
+    document.getElementById('w-error').style.display = 'none';
+  }
+}
+
+function clearFilePreview() {
+  if (pendingFileData && pendingFileData.blobUrl) URL.revokeObjectURL(pendingFileData.blobUrl);
+  pendingFileData = null;
+  document.getElementById('file-preview').style.display = 'none';
+  document.getElementById('file-preview-img').src = '';
+  document.getElementById('file-preview-vid').src = '';
+  document.getElementById('file-preview-name').textContent = '';
+  document.getElementById('w-file-input').value = '';
+}
+
+// Focus highlight for admin inputs
+document.querySelectorAll('#add-work-form input[type="text"], #add-work-form input[type="email"], #add-work-form select').forEach(el => {
+  el.addEventListener('focus', () => el.style.borderColor = '#e6a23c');
+  el.addEventListener('blur',  () => el.style.borderColor = 'rgba(255,255,255,0.1)');
+});
+
+// ---- ADD WORK button ----
+document.getElementById('w-add-btn').addEventListener('click', () => {
+  const title = document.getElementById('w-title').value.trim();
+  const sub   = document.getElementById('w-sub').value.trim();
+  const cat   = document.getElementById('w-cat').value;
+  const meta  = document.getElementById('w-meta').value.trim();
+  const type  = document.querySelector('input[name="w-type"]:checked').value;
+  const errEl = document.getElementById('w-error');
+  errEl.style.display = 'none';
+
+  if (!title) { showErr('Title is required.'); return; }
+
+  let url = '';
+  if (currentMediaTab === 'url') {
+    url = document.getElementById('w-url').value.trim();
+    if (!url) { showErr('Please enter an image or video URL / filename.'); return; }
+  } else {
+    if (!pendingFileData) { showErr('Please select a file to upload.'); return; }
+    url = pendingFileData.dataUrl;
+  }
+
+  const newWork = { id: 'w-' + Date.now(), title, sub, cat, meta, type, url };
+
+  try {
+    const works = loadWorks();
+    works.push(newWork);
+    saveWorks(works);
+  } catch (storageErr) {
+    showErr('Storage full — try a smaller image or use a URL instead.');
+    return;
+  }
+
+  // Clear form
+  ['w-title', 'w-sub', 'w-meta', 'w-url'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('w-type-image').checked = true;
+  document.getElementById('w-url-label').textContent = 'Image URL *';
+  document.getElementById('w-url-hint').textContent  = 'Paste a hosted image link (CDN / Drive / Cloudinary…)';
+  document.getElementById('w-url').placeholder = 'https://... or image.jpg';
+  clearFilePreview();
+  switchMediaTab('url');
+
+  renderWorksList();
+  renderGrid();
+  showSuccess();
+});
+
+function showErr(msg) {
+  const el = document.getElementById('w-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function showSuccess() {
+  const btn = document.getElementById('w-add-btn');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Added!';
+  btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+  setTimeout(() => {
+    btn.textContent = orig;
+    btn.style.background = 'linear-gradient(135deg,#ff6b35,#e6a23c)';
+  }, 1800);
+}
+
+// RENDER works list inside panel
+function renderWorksList() {
+  const works = loadWorks();
+  const listEl = document.getElementById('works-list');
+
+  if (!works.length) {
+    listEl.innerHTML = `<div style="text-align:center;padding:20px 0;color:#555;font-size:.82rem;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;">No works yet</div>`;
+    return;
+  }
+
+  listEl.innerHTML = works.map(w => `
+    <div data-list-id="${w.id}" style="
+      display:flex;align-items:center;gap:12px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:12px;padding:12px 14px;
+      transition:border-color .2s;">
+      <!-- Thumbnail -->
+      <div style="width:44px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#1a1a1c;">
+        ${w.type === 'video'
+          ? `<video src="${escHtml(w.url)}" muted style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>`
+          : `<img src="${escHtml(w.url)}" alt="" style="width:100%;height:100%;object-fit:cover;" loading="lazy" />`
+        }
+      </div>
+      <!-- Info -->
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(w.title)}</div>
+        <div style="font-size:.75rem;color:#888;margin-top:2px;">${escHtml(w.cat)}${w.meta ? ' · ' + escHtml(w.meta) : ''}</div>
+      </div>
+      <!-- Delete -->
+      <button onclick="deleteWork('${w.id}')"
+        style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,80,80,0.2);
+               background:rgba(255,80,80,0.08);color:#ff8080;cursor:pointer;flex-shrink:0;
+               display:flex;align-items:center;justify-content:center;transition:background .2s;"
+        onmouseenter="this.style.background='rgba(255,80,80,0.2)'"
+        onmouseleave="this.style.background='rgba(255,80,80,0.08)'"
+        title="Remove this work" aria-label="Remove ${escHtml(w.title)}">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="2,4 14,4"/><path d="M6,4V2h4v2"/><path d="M3,4l1,10h8l1-10"/><line x1="6" y1="7" x2="6" y2="11"/><line x1="10" y1="7" x2="10" y2="11"/></svg>
+      </button>
+    </div>`).join('');
+}
+
+function deleteWork(id) {
+  if (!confirm('Remove this work from the portfolio?')) return;
+  const works = loadWorks().filter(w => w.id !== id);
+  saveWorks(works);
+  renderWorksList();
+  renderGrid();
+}
+
+// =============================================
+// ORDER FORM → MAILTO
+// =============================================
+const form = document.getElementById('order-form');
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = new FormData(form);
+  const subject = `New brief — ${f.get('service')} (${f.get('deadline')})`;
+  const body =
+`Hi Cheditz,
+
+Name: ${f.get('name')}
+Email: ${f.get('email')}
+Service: ${f.get('service')}
+Deadline: ${f.get('deadline')}
+Budget: ${f.get('budget')}
+
+Brief:
+${f.get('brief')}
+
+— Sent via cheditz`;
+  window.location.href = `mailto:cheditz94@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+</script>
+</body>
+</html>
