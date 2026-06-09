@@ -1,0 +1,16 @@
+{
+  "name": "cheditz",
+  "version": "1.0.0",
+  "description": "Cheditz — Photo, Video & Document Editing",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"No tests specified\""
+  },
+  "keywords": ["photo-editing", "video-editing", "document-editing"],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.34.1",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  }
+}
