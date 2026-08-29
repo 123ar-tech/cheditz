@@ -337,10 +337,15 @@ img{max-width:100%;display:block}
 .order-form{border:1px solid var(--edge);padding:2.5rem;display:flex;flex-direction:column;gap:1.25rem}
 .ff{display:flex;flex-direction:column;gap:0.35rem}
 .ff label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
-.ff input,.ff textarea,.ff select{background:transparent;border:1px solid var(--edge);color:var(--txt);padding:0.9rem 1rem;font-family:inherit;font-size:0.95rem;transition:border-color .2s;-webkit-appearance:none;width:100%}
+.ff input,.ff textarea,.ff select{background:transparent;border:1px solid var(--edge);color:var(--txt);padding:0.9rem 1rem;font-family:inherit;font-size:0.95rem;transition:border-color .2s;-webkit-appearance:none;width:100%;border-radius:8px}
 .ff input:focus,.ff textarea:focus,.ff select:focus{outline:none;border-color:var(--acc)}
 .ff select option{background:var(--surface);color:var(--txt)}
-@media(max-width:768px){.ff input,.ff textarea,.ff select{font-size:16px}}
+@media(max-width:768px){
+  .ff input,.ff textarea,.ff select{font-size:16px;padding:0.85rem 0.9rem;min-height:44px;border-radius:10px}
+  .ff textarea{min-height:100px}
+  .ff label{font-size:0.55rem}
+  .ff-row{grid-template-columns:1fr;gap:1rem}
+}
 .ff-row{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
 .ff.error input,.ff.error textarea,.ff.error select{border-color:#ef4444}
 
@@ -754,7 +759,7 @@ body:hover .cursor-glow{opacity:1}
   .sec{padding:clamp(2.5rem,6vw,4rem) 0}
   .sec-title{font-size:clamp(1.6rem,5vw,2.5rem)}
   .wrap{padding:0 1rem}
-  .work-card{flex:0 0 280px}
+  .work-card{flex:0 0 calc(100vw - 2rem)}
   .svc-item{padding:1.5rem}
   .process-steps{grid-template-columns:1fr !important}
   .process-step{padding:1.5rem}
@@ -779,6 +784,19 @@ body:hover .cursor-glow{opacity:1}
   .hscroll-wrap{padding:2rem 0}
   .brief-assist textarea{min-height:100px}
   .svc-content{grid-template-columns:1fr !important}
+  .svc-body{max-height:300px !important;overflow-y:auto}
+  .price-card .price{font-size:1.8rem !important}
+  .price-card .price-desc{font-size:0.7rem !important}
+  .price-feats{font-size:0.75rem !important;text-align:left !important}
+  .testi-stars{font-size:0.9rem}
+  .testi-text{font-size:0.8rem;line-height:1.6}
+  .testi-author{font-size:0.7rem}
+  .btn{padding:0.8rem 1.5rem;font-size:0.85rem;width:100%}
+  .blob-btn{padding:0.8rem 1.5rem;font-size:0.85rem;width:100%}
+  .sec-label{font-size:0.55rem;letter-spacing:0.15em}
+  .hero-badge{font-size:0.6rem;padding:0.5rem 1rem}
+  .stat-num{font-size:1.5rem}
+  .stat-label{font-size:0.6rem}
 }
 
 @media(min-width:481px) and (max-width:768px){
@@ -787,17 +805,23 @@ body:hover .cursor-glow{opacity:1}
   .nav-links a{font-size:0.7rem}
   .hero h1{font-size:clamp(2rem,6vw,3.2rem)}
   .wrap{padding:0 1.25rem}
-  .work-card{flex:0 0 320px}
+  .work-card{flex:0 0 calc(100vw - 3rem)}
   .process-steps{grid-template-columns:1fr 1fr !important}
   .stats-row{grid-template-columns:repeat(2,1fr) !important}
   .pricing-grid{grid-template-columns:1fr 1fr !important}
+  .price-card{padding:1.5rem}
+  .price-card .price{font-size:1.8rem}
   .testi-grid{grid-template-columns:1fr 1fr !important}
+  .testi-card{padding:1.25rem}
+  .order-grid{grid-template-columns:1fr !important}
+  .order-form{padding:2rem}
   .tools-grid{grid-template-columns:1fr 1fr !important}
   .trends-grid{grid-template-columns:1fr 1fr !important}
   .contact-grid{grid-template-columns:1fr !important;gap:2.5rem !important}
   .chat-window{width:min(360px,90vw)}
   .share-panel{left:0.5rem}
   .share-btn{width:34px;height:34px}
+  .svc-body{max-height:400px !important;overflow-y:auto}
 }
 
 @media(min-width:769px) and (max-width:1024px){
@@ -838,6 +862,8 @@ body:hover .cursor-glow{opacity:1}
   #waBtn:hover{transform:none}
   .btn:hover{transform:none}
   .blob-btn:hover{transform:none}
+  .hscroll-track{touch-action:pan-x;-webkit-overflow-scrolling:touch}
+  .order-form{touch-action:manipulation}
 }
 
 /* Safe area for notched phones */
