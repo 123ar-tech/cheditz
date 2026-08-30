@@ -416,7 +416,7 @@ img{max-width:100%;display:block}
 /* Contact */
 #contact{position:relative;z-index:2;background:var(--bg)}
 #contact::before{content:'';position:absolute;inset:0;background:var(--bg);z-index:-1}
-.contact-grid{display:grid;grid-template-columns:1fr;gap:4rem}
+.contact-grid{display:grid;grid-template-columns:1fr;gap:3rem}
 @media(min-width:1024px){.contact-grid{grid-template-columns:1fr 1fr;gap:3rem}}
 .contact-link{display:flex;flex-direction:column;gap:0.5rem;padding:1.5rem 0;border-bottom:1px solid var(--edge);text-decoration:none;color:var(--txt);transition:padding-left .3s,color .3s;min-width:0}
 .contact-link:first-of-type{border-top:1px solid var(--edge)}
@@ -1461,7 +1461,15 @@ body:hover .cursor-glow{opacity:1}
         <h2 class="sec-title" style="font-size:clamp(2.2rem,6vw,4.5rem);line-height:0.95;margin-bottom:2rem" id="secContactHead">
           Let's make<br/>something<br/><em style="font-style:italic;color:var(--acc)">unforgettable.</em>
         </h2>
-        <p style="color:var(--dim);max-width:400px;line-height:1.8" id="secContactDesc">Quick questions, partnership ideas, or just to say hi — the inbox is always open.</p>
+        <p style="color:var(--dim);max-width:400px;line-height:1.8;margin-bottom:2rem" id="secContactDesc">Quick questions, partnership ideas, or just to say hi — the inbox is always open.</p>
+        <div class="hours-box" style="margin-top:0">
+          <div class="icon">◷</div>
+          <div style="min-width:0;overflow:hidden">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem">Working hours</div>
+            <div style="font-size:0.95rem" id="ctHoursVal2">Mon — Sat · 9:00 – 19:00 IST</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:0.2rem" id="ctReplyVal2">Replies usually within 4 hours.</div>
+          </div>
+        </div>
       </div>
       <div class="rv" style="min-width:0;overflow:hidden">
         <a id="ctLinkEmail" href="mailto:cheditz94@gmail.com" class="contact-link border-anim">
