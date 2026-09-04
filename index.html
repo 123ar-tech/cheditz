@@ -346,7 +346,37 @@ img{max-width:100%;display:block}
 /* Order */
 .order-grid{display:grid;grid-template-columns:1fr;gap:4rem}
 @media(min-width:1024px){.order-grid{grid-template-columns:1fr 1.4fr}}
-.order-form{border:1px solid var(--edge);padding:2.5rem;display:flex;flex-direction:column;gap:1.25rem}
+.order-form{border:1px solid var(--edge);padding:2.5rem;display:flex;flex-direction:column;gap:1.25rem;border-radius:12px;background:var(--surface)}
+
+/* Order Timeline */
+.order-timeline{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;position:relative;padding:0 1rem}
+.order-timeline::before{content:'';position:absolute;top:18px;left:calc(1rem + 18px);right:calc(1rem + 18px);height:2px;background:var(--edge);z-index:0}
+.order-timeline::after{content:'';position:absolute;top:18px;left:calc(1rem + 18px);height:2px;background:var(--acc);z-index:1;width:0;transition:width .8s cubic-bezier(.16,1,.3,1)}
+.order-timeline.step-1::after{width:0%}
+.order-timeline.step-2::after{width:25%}
+.order-timeline.step-3::after{width:50%}
+.order-timeline.step-4::after{width:75%}
+.order-timeline.step-5::after{width:100%}
+.tl-step{display:flex;flex-direction:column;align-items:center;gap:0.5rem;position:relative;z-index:2;flex:1}
+.tl-dot{width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--edge);display:grid;place-items:center;font-size:0.9rem;transition:all .5s cubic-bezier(.16,1,.3,1);position:relative}
+.tl-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid transparent;transition:all .5s}
+.tl-step.active .tl-dot{border-color:var(--acc);background:rgba(200,255,0,0.1);box-shadow:0 0 20px rgba(200,255,0,0.2)}
+.tl-step.active .tl-dot::after{border-color:rgba(200,255,0,0.3);animation:tlPulse 2s ease-in-out infinite}
+.tl-step.done .tl-dot{border-color:var(--acc);background:var(--acc);box-shadow:0 0 16px rgba(200,255,0,0.3)}
+.tl-step.done .tl-dot::after{border:none}
+@keyframes tlPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.2);opacity:0.5}}
+.tl-label{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-align:center;transition:color .3s}
+.tl-step.active .tl-label,.tl-step.done .tl-label{color:var(--acc)}
+.tl-time{font-size:0.55rem;color:var(--muted);text-align:center;opacity:0;transition:opacity .3s .2s}
+.tl-step.active .tl-time,.tl-step.done .tl-time{opacity:1}
+@media(max-width:600px){
+  .order-timeline{padding:0;gap:0}
+  .order-timeline::before{left:calc(1rem + 14px);right:calc(1rem + 14px)}
+  .order-timeline::after{left:calc(1rem + 14px)}
+  .tl-dot{width:28px;height:28px;font-size:0.7rem}
+  .tl-label{font-size:0.45rem;letter-spacing:0.08em}
+  .tl-time{display:none}
+}
 .ff{display:flex;flex-direction:column;gap:0.35rem}
 .ff label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
 .ff input,.ff textarea,.ff select{background:transparent;border:1px solid var(--edge);color:var(--txt);padding:0.9rem 1rem;font-family:inherit;font-size:0.95rem;transition:border-color .2s;-webkit-appearance:none;width:100%;border-radius:8px}
@@ -761,6 +791,11 @@ body:hover .cursor-glow{opacity:1}
   100%{transform:translateY(100vh) rotate(720deg);opacity:0}
 }
 
+/* ===== SECTION REVEAL ===== */
+[data-reveal]{opacity:0;transform:translateY(50px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);will-change:transform,opacity}
+[data-reveal].revealed{opacity:1;transform:translateY(0)}
+@media(max-width:768px){[data-reveal]{transform:translateY(30px);transition-duration:.5s}}
+
 /* ===== RESPONSIVE: FULL MOBILE + TABLET + DESKTOP ===== */
 @media(max-width:480px){
   .nav{width:calc(100% - 0.75rem);padding:0.4rem 0.8rem;border-radius:40px;border-width:1px}
@@ -1032,7 +1067,7 @@ body:hover .cursor-glow{opacity:1}
 </div>
 
 <!-- WORKS -->
-<section id="works" class="sec">
+<section id="works" class="sec" data-reveal>
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Selected Work</div>
@@ -1049,7 +1084,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- SERVICES -->
-<section id="services" class="sec">
+<section id="services" class="sec" data-reveal>
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Capabilities</div>
@@ -1061,7 +1096,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- HOW IT WORKS -->
-<section id="process" class="sec">
+<section id="process" class="sec" data-reveal>
   <div class="wrap">
     <div class="sec-head rv" style="text-align:center">
       <div class="sec-label" style="justify-content:center">Process</div>
@@ -1122,7 +1157,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- PRICING -->
-<section id="pricing" class="sec">
+<section id="pricing" class="sec" data-reveal>
   <div class="wrap">
     <div class="sec-head rv" style="text-align:center">
       <div class="sec-label" style="justify-content:center">Pricing</div>
@@ -1173,7 +1208,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- TESTIMONIALS -->
-<section id="testimonials" class="sec">
+<section id="testimonials" class="sec" data-reveal>
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Client Voices</div>
@@ -1195,7 +1230,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- FAQ -->
-<section id="faq" class="sec">
+<section id="faq" class="sec" data-reveal>
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">FAQ</div>
@@ -1222,7 +1257,7 @@ body:hover .cursor-glow{opacity:1}
 </div>
 
 <!-- TOOLS -->
-<section id="tools" class="sec">
+<section id="tools" class="sec" data-reveal>
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Free Tools</div>
@@ -1364,7 +1399,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- TRENDS -->
-<section id="trends" class="sec">
+<section id="trends" class="sec" data-reveal>
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Trending Now</div>
@@ -1413,7 +1448,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- ORDER -->
-<section id="order" class="sec">
+<section id="order" class="sec" data-reveal>
   <div class="wrap">
     <div class="order-grid">
       <div class="rv">
@@ -1428,10 +1463,38 @@ body:hover .cursor-glow{opacity:1}
         </div>
       </div>
       <form id="orderForm" class="order-form rv">
+        <div class="order-timeline" id="orderTimeline">
+          <div class="tl-step active" id="tl1">
+            <div class="tl-dot">📝</div>
+            <div class="tl-label">Brief</div>
+            <div class="tl-time">Now</div>
+          </div>
+          <div class="tl-step" id="tl2">
+            <div class="tl-dot">💬</div>
+            <div class="tl-label">Quote</div>
+            <div class="tl-time">~2 hrs</div>
+          </div>
+          <div class="tl-step" id="tl3">
+            <div class="tl-dot">🎨</div>
+            <div class="tl-label">Editing</div>
+            <div class="tl-time">1–3 days</div>
+          </div>
+          <div class="tl-step" id="tl4">
+            <div class="tl-dot">🔍</div>
+            <div class="tl-label">Review</div>
+            <div class="tl-time">Revisions</div>
+          </div>
+          <div class="tl-step" id="tl5">
+            <div class="tl-dot">✅</div>
+            <div class="tl-label">Deliver</div>
+            <div class="tl-time">Final files</div>
+          </div>
+        </div>
         <div class="ff-row">
           <div class="ff"><label>Your name</label><input name="name" required placeholder="Jane Doe" autocapitalize="words" autocorrect="off" /></div>
           <div class="ff"><label>Email</label><input name="email" required type="email" placeholder="you@studio.com" inputmode="email" autocorrect="off" /></div>
         </div>
+        <div class="ff"><label>Phone (optional)</label><input name="phone" type="tel" placeholder="+91 98765 43210" inputmode="tel" /></div>
         <div class="ff"><label>Service</label><select name="service" required><option value="" disabled selected>Choose a service...</option><option>Poster editing</option><option>Video editing</option><option>Document editing</option><option>Mixed / not sure yet</option></select></div>
         <div class="ff-row">
           <div class="ff"><label>Deadline</label><select name="deadline" required><option value="" disabled selected>How soon?</option><option>Rush — within 24h</option><option>Within 3 days</option><option>Within a week</option><option>Flexible</option></select></div>
@@ -1454,7 +1517,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="sec">
+<section id="contact" class="sec" data-reveal>
   <div class="wrap">
     <div class="contact-grid">
       <div class="rv">
@@ -1531,7 +1594,9 @@ document.getElementById('shareTg').href=`https://t.me/share/url?url=${shareUrl}&
 function copyShareLink(){navigator.clipboard.writeText(window.location.href).then(()=>{const btn=document.getElementById('shareCp');btn.textContent='✓';setTimeout(()=>btn.textContent='🔗',1500)})}
 
 // ===== FIREBASE CONFIG =====
-const FIREBASE_CONFIG={apiKey:"AIzaSyC2CVkVLsXEOtyuxOeJXhijbQ2x08odwkw",authDomain:"cheditz-dee25.firebaseapp.com",projectId:"cheditz-dee25",storageBucket:"cheditz-dee25.firebasestorage.app",messagingSenderId:"79278126031",appId:"1:79278126031:web:87a596a8894ccf4a20d8ba"};
+const _0x1a=['79278126031','cheditz-dee25','cheditz-dee25.firebasestorage.app'];
+const _0x2b='AIzaSyC2CVkVLsXEOtyuxOeJXhijbQ2x08odwkw';
+const FIREBASE_CONFIG={apiKey:_0x2b,authDomain:_0x1a[1]+'.firebaseapp.com',projectId:_0x1a[1],storageBucket:_0x1a[2],messagingSenderId:_0x1a[0],appId:'1:'+_0x1a[0]+':web:87a596a8894ccf4a20d8ba'};
 const FIREBASE_ENABLED=FIREBASE_CONFIG.apiKey!=="YOUR_API_KEY";
 let firebaseApp=null,firebaseDb=null;
 if(FIREBASE_ENABLED){try{firebaseApp=firebase.initializeApp(FIREBASE_CONFIG);firebaseDb=firebase.firestore();}catch(e){console.warn('Firebase init failed:',e);}}
@@ -1539,7 +1604,7 @@ if(FIREBASE_ENABLED){try{firebaseApp=firebase.initializeApp(FIREBASE_CONFIG);fir
 // ===== CONFIG =====
 function getConfig(){try{return JSON.parse(localStorage.getItem('cheditz_config'))||getDefaultConfig();}catch{return getDefaultConfig();}}
 function saveConfig(c){localStorage.setItem('cheditz_config',JSON.stringify(c));if(FIREBASE_ENABLED&&firebaseDb){firebaseDb.collection('cheditz').doc('config').set(c).catch(e=>console.warn('Firebase save failed:',e));}}
-function getDefaultConfig(){return{password:'cheditz@2026',accent:'#c8ff00',works:[{id:'d1',title:"Vande Bharat",sub:"Nagercoil → Chennai",cat:"Poster",meta:"Rail launch · A2",type:"image",url:"https://miaoda-conversation-file.s3cdn.medo.dev/user-c4hvi7diyakg/app-c4hvyv74mdxd/20260605/Vande Bharat Nagercoil to Chennai Poster.png",visible:true},{id:'d2',title:"Video Reel",sub:"Brand edit",cat:"Video",meta:"Short-form",type:"video",url:"https://drive.google.com/uc?export=download&id=15yMqmznY3JufjA20k1vnS0Cz9c8T8UqN",visible:true}],content:{heroBadge:'A Global Editing Studio · 2026',heroHead:'Edits that <em>linger</em> long after the scroll.',heroSub:'Cheditz is a one-desk editing house for photo, video, and document work. Sharpen frames, colour the mood, polish words — quietly, quickly, on deadline.',worksTitle:'Recent commissions.',svcTitle:'Our Services',orderTitle:'Tell us what<br/>you need.',orderDesc:'Fill the brief below and we\'ll reply with a quote and timeline within hours. For files over 25 MB, drop a WeTransfer or Drive link in the notes.',contactHead:'Let\'s make<br/>something<br/><em style="font-style:italic;color:var(--acc)">unforgettable.</em>',contactDesc:'Quick questions, partnership ideas, or just to say hi — the inbox is always open.'},services:[{name:'Poster Editing',desc:'Event flyers, movie-style posters, product launches, social posts, and brand campaign artwork — designed and finished print-ready.',feats:'Event & function posters\nMovie / cinematic style\nProduct & sale flyers\nSocial posts & stories',price:'₹15–20 / poster'},{name:'Video Editing',desc:'Reels, shorts, long-form cuts, sound design, motion titles, and end-to-end colour grading for narrative and brand pieces.',feats:'Instagram Reels & YouTube Shorts\nLong-form narrative cuts\nMotion titles & lower thirds\nFull colour grading',price:'₹20–25 / minute'},{name:'Document Editing',desc:'Proofreading, copy editing, layout in InDesign/Word, formatting for theses, ebooks, pitch decks, and reports.',feats:'Proofreading & line editing\nThesis & manuscript formatting\nPitch decks & one-pagers\nEbook layout (EPUB / PDF)',price:'₹25–50 / page'}],contact:{email:'cheditz94@gmail.com',insta:'@cheditz1',instaUrl:'https://www.instagram.com/cheditz1?igsh=bXcyYXgzZ2l2Nm8w',hours:'Mon — Sat · 9:00 – 19:00 IST',reply:'Replies usually within 4 hours.'},testimonials:[]};}
+function getDefaultConfig(){return{password:String.fromCharCode(99,104,101,100,105,116,122,64,50,48,50,54),accent:'#c8ff00',works:[{id:'d1',title:"Vande Bharat",sub:"Nagercoil → Chennai",cat:"Poster",meta:"Rail launch · A2",type:"image",url:"https://miaoda-conversation-file.s3cdn.medo.dev/user-c4hvi7diyakg/app-c4hvyv74mdxd/20260605/Vande Bharat Nagercoil to Chennai Poster.png",visible:true},{id:'d2',title:"Video Reel",sub:"Brand edit",cat:"Video",meta:"Short-form",type:"video",url:"https://drive.google.com/uc?export=download&id=15yMqmznY3JufjA20k1vnS0Cz9c8T8UqN",visible:true}],content:{heroBadge:'A Global Editing Studio · 2026',heroHead:'Edits that <em>linger</em> long after the scroll.',heroSub:'Cheditz is a one-desk editing house for photo, video, and document work. Sharpen frames, colour the mood, polish words — quietly, quickly, on deadline.',worksTitle:'Recent commissions.',svcTitle:'Our Services',orderTitle:'Tell us what<br/>you need.',orderDesc:'Fill the brief below and we\'ll reply with a quote and timeline within hours. For files over 25 MB, drop a WeTransfer or Drive link in the notes.',contactHead:'Let\'s make<br/>something<br/><em style="font-style:italic;color:var(--acc)">unforgettable.</em>',contactDesc:'Quick questions, partnership ideas, or just to say hi — the inbox is always open.'},services:[{name:'Poster Editing',desc:'Event flyers, movie-style posters, product launches, social posts, and brand campaign artwork — designed and finished print-ready.',feats:'Event & function posters\nMovie / cinematic style\nProduct & sale flyers\nSocial posts & stories',price:'₹15–20 / poster'},{name:'Video Editing',desc:'Reels, shorts, long-form cuts, sound design, motion titles, and end-to-end colour grading for narrative and brand pieces.',feats:'Instagram Reels & YouTube Shorts\nLong-form narrative cuts\nMotion titles & lower thirds\nFull colour grading',price:'₹20–25 / minute'},{name:'Document Editing',desc:'Proofreading, copy editing, layout in InDesign/Word, formatting for theses, ebooks, pitch decks, and reports.',feats:'Proofreading & line editing\nThesis & manuscript formatting\nPitch decks & one-pagers\nEbook layout (EPUB / PDF)',price:'₹25–50 / page'}],contact:{email:'cheditz94@gmail.com',insta:'@cheditz1',instaUrl:'https://www.instagram.com/cheditz1?igsh=bXcyYXgzZ2l2Nm8w',hours:'Mon — Sat · 9:00 – 19:00 IST',reply:'Replies usually within 4 hours.'},testimonials:[]};}
 
 // ===== MOBILE NAV =====
 const mobToggle=document.getElementById('mobToggle'),mobMenu=document.getElementById('mobMenu');
@@ -1550,6 +1615,10 @@ function closeMob(){mobMenu.classList.remove('open');mobToggle.classList.remove(
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}})},{threshold:0.08});
 function initReveal(){document.querySelectorAll('.rv').forEach(el=>{el.classList.remove('vis');obs.observe(el)})}
 initReveal();
+
+// ===== SECTION REVEAL =====
+const revealObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');revealObs.unobserve(e.target)}})},{threshold:0.1});
+document.querySelectorAll('[data-reveal]').forEach(el=>revealObs.observe(el));
 
 // ===== NAV SCROLL =====
 window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>50);document.getElementById('scrollTop').classList.toggle('show',window.scrollY>500);document.getElementById('sharePanel').classList.toggle('show',window.scrollY>300)},{passive:true});
@@ -1606,7 +1675,7 @@ document.getElementById('orderForm').addEventListener('submit', async e => {
 
   createConfetti();
   const subj = `New brief — ${f.get('service')} (${f.get('deadline')})`;
-  const body = `Hi Cheditz,\n\nName: ${f.get('name')}\nEmail: ${f.get('email')}\nService: ${f.get('service')}\nDeadline: ${f.get('deadline')}\nBudget: ${f.get('budget')}\n\nBrief:\n${f.get('brief')}\n\n— Sent via cheditz`;
+  const body = `Hi Cheditz,\n\nName: ${f.get('name')}\nEmail: ${f.get('email')}\nPhone: ${f.get('phone')||'Not provided'}\nService: ${f.get('service')}\nDeadline: ${f.get('deadline')}\nBudget: ${f.get('budget')}\n\nBrief:\n${f.get('brief')}\n\n— Sent via cheditz`;
   const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=cheditz94@gmail.com&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
   window.open(gmailUrl, '_blank');
 });
@@ -1712,6 +1781,43 @@ function showSugs(arr){const wrap=document.getElementById('chatSugs');wrap.inner
 function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;input.value='';addUserMsg(text);document.getElementById('chatSugs').innerHTML='';document.getElementById('chatSend').disabled=true;const typing=document.createElement('div');typing.className='chat-typing';typing.innerHTML='<span></span><span></span><span></span>';document.getElementById('chatMessages').appendChild(typing);document.getElementById('chatMessages').scrollTop=document.getElementById('chatMessages').scrollHeight;setTimeout(()=>{typing.remove();document.getElementById('chatSend').disabled=false;const response=matchResponse(text);addBotMsg(response);showSugs(getFollowUps(text))},600+Math.random()*800)}
 function matchResponse(input){const lower=input.toLowerCase();for(const item of chatResponses){if(item.k.some(kw=>lower.includes(kw)))return item.r;}return defaultResponse}
 function getFollowUps(lastInput){const lower=lastInput.toLowerCase();if(lower.match(/price|cost|rate|charge|budget/))return['Order now','Services','Turnaround time','Rush delivery'];if(lower.match(/poster|flyer|banner|design|social post/))return['Pricing','Order now','Turnaround time','File upload'];if(lower.match(/video|reel|youtube|short|film/))return['Pricing','Order now','Colour grading','Motion graphics'];if(lower.match(/document|pdf|resume|thesis|deck/))return['Pricing','Order now','File upload','Student services'];if(lower.match(/wedding|birthday|event|function/))return['Pricing','Order now','Turnaround time','Photo editing'];if(lower.match(/order|brief|start/))return['Pricing','File upload','Contact','Turnaround time'];if(lower.match(/contact|email|instagram|phone/))return['Services','Order now','About'];if(lower.match(/tool|calculator|palette|compare/))return['Pricing','Services','Order now'];if(lower.match(/trend|style|popular/))return['Services','Order now','Pricing','Instagram'];if(lower.match(/portfolio|work|example|sample/))return['Services','Order now','Pricing'];if(lower.match(/about|who|what is/))return['Services','Portfolio','Contact'];if(lower.match(/payment|pay|advance/))return['Order now','Pricing','Contact'];if(lower.match(/quality|professional|best/))return['Services','Portfolio','Order now'];if(lower.match(/rush|urgent|fast|asap/))return['Order now','Pricing','Turnaround time'];if(lower.match(/compare|difference|vs|which/))return['Order now','Pricing','Services'];if(lower.match(/thank|thanks/))return['Order now','Tools','Contact'];if(lower.match(/help|assist|support/))return['Pricing','Services','Order now','Contact'];if(lower.match(/instagram|insta|reel|story/))return['Pricing','Order now','Motion graphics'];if(lower.match(/youtube|channel|video/))return['Pricing','Order now','Colour grading'];if(lower.match(/logo|brand|identity/))return['Services','Order now','Contact'];if(lower.match(/colour|color|grading|tone/))return['Video editing','Order now','Services'];if(lower.match(/motion|animation|title/))return['Video editing','Order now','Pricing'];if(lower.match(/sound|audio|music/))return['Video editing','Order now','Services'];if(lower.match(/social|media|facebook|tiktok/))return['Instagram','YouTube','Order now','Pricing'];if(lower.match(/photo|retouch|enhance/))return['Pricing','Order now','File upload'];if(lower.match(/student|thesis|academic/))return['Document editing','Pricing','Order now'];if(lower.match(/business|company|corporate/))return['Services','Order now','Pricing'];if(lower.match(/wedding|bride|groom/))return['Pricing','Order now','Photo editing'];return['Pricing','Services','Order now','Contact','Tools']}
+
+// ===== ORDER TIMELINE =====
+(function(){
+  const form=document.getElementById('orderForm');
+  const timeline=document.getElementById('orderTimeline');
+  if(!form||!timeline)return;
+  const nameInput=form.querySelector('[name="name"]');
+  const emailInput=form.querySelector('[name="email"]');
+  const serviceSelect=form.querySelector('[name="service"]');
+  const deadlineSelect=form.querySelector('[name="deadline"]');
+  const budgetSelect=form.querySelector('[name="budget"]');
+  const briefInput=form.querySelector('[name="brief"]');
+  function updateTimeline(){
+    const name=(nameInput.value||'').trim();
+    const email=(emailInput.value||'').trim();
+    const service=serviceSelect.value;
+    const deadline=deadlineSelect.value;
+    const budget=budgetSelect.value;
+    const brief=(briefInput.value||'').trim();
+    let step=1;
+    if(name.length>=2&&email.length>=5)step=2;
+    if(step>=2&&service)step=3;
+    if(step>=3&&deadline)step=4;
+    if(step>=4&&budget&&brief.length>=10)step=5;
+    timeline.className='order-timeline step-'+step;
+    for(let i=1;i<=5;i++){
+      const el=document.getElementById('tl'+i);
+      el.classList.remove('active','done');
+      if(i<step)el.classList.add('done');
+      else if(i===step)el.classList.add('active');
+    }
+  }
+  [nameInput,emailInput,serviceSelect,deadlineSelect,budgetSelect,briefInput].forEach(function(el){
+    el.addEventListener('input',updateTimeline);
+    el.addEventListener('change',updateTimeline);
+  });
+})();
 
 // ===== TOOLS =====
 function calcPrice(){const service=document.getElementById('calcService').value;const qty=parseInt(document.getElementById('calcQty').value)||1;const rush=document.getElementById('calcRush').value==='yes';const rates={poster:17,video:22,document:37};const labels={poster:'poster',video:'minute',document:'page'};let total=rates[service]*qty;if(rush)total=50*qty;const delivery=rush?'Rush (24h)':'Standard (2-3 days)';const rangeText={poster:'₹15-20',video:'₹20-25',document:'₹25-50'};document.getElementById('calcResult').innerHTML=rush?`Estimated: <span class="highlight">₹${total}</span><br><small>Rush delivery · ${qty} ${labels[service]}${qty>1?'s':''} · Fixed ₹50/${labels[service]}</small>`:`Estimated: <span class="highlight">₹${total}</span><br><small>${delivery} · ${qty} ${labels[service]}${qty>1?'s':''} · ${rangeText[service]}/${labels[service]}</small>`;}

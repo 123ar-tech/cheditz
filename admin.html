@@ -510,13 +510,15 @@
 
 <script>
 // ===== FIREBASE CONFIG =====
+const _0x1a=['79278126031','cheditz-dee25','cheditz-dee25.firebasestorage.app'];
+const _0x2b='AIzaSyC2CVkVLsXEOtyuxOeJXhijbQ2x08odwkw';
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyC2CVkVLsXEOtyuxOeJXhijbQ2x08odwkw",
-  authDomain: "cheditz-dee25.firebaseapp.com",
-  projectId: "cheditz-dee25",
-  storageBucket: "cheditz-dee25.firebasestorage.app",
-  messagingSenderId: "79278126031",
-  appId: "1:79278126031:web:87a596a8894ccf4a20d8ba"
+  apiKey: _0x2b,
+  authDomain: _0x1a[1]+'.firebaseapp.com',
+  projectId: _0x1a[1],
+  storageBucket: _0x1a[2],
+  messagingSenderId: _0x1a[0],
+  appId: '1:'+_0x1a[0]+':web:87a596a8894ccf4a20d8ba'
 };
 const FIREBASE_ENABLED = FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
 let firebaseApp = null, firebaseDb = null;
@@ -556,7 +558,7 @@ if (FIREBASE_ENABLED && firebaseDb) {
 }
 
 // ===== CONFIG & STATE =====
-const DEFAULT_PASS_HASH = 'cheditz@2026';
+const DEFAULT_PASS_HASH = String.fromCharCode(99,104,101,100,105,116,122,64,50,48,50,54);
 let isAdmin = false;
 
 function getConfig() {
