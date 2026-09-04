@@ -791,11 +791,6 @@ body:hover .cursor-glow{opacity:1}
   100%{transform:translateY(100vh) rotate(720deg);opacity:0}
 }
 
-/* ===== SECTION REVEAL ===== */
-[data-reveal]{opacity:0;transform:translateY(50px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);will-change:transform,opacity}
-[data-reveal].revealed{opacity:1;transform:translateY(0)}
-@media(max-width:768px){[data-reveal]{transform:translateY(30px);transition-duration:.5s}}
-
 /* ===== RESPONSIVE: FULL MOBILE + TABLET + DESKTOP ===== */
 @media(max-width:480px){
   .nav{width:calc(100% - 0.75rem);padding:0.4rem 0.8rem;border-radius:40px;border-width:1px}
@@ -1067,7 +1062,7 @@ body:hover .cursor-glow{opacity:1}
 </div>
 
 <!-- WORKS -->
-<section id="works" class="sec" data-reveal>
+<section id="works" class="sec">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Selected Work</div>
@@ -1084,7 +1079,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- SERVICES -->
-<section id="services" class="sec" data-reveal>
+<section id="services" class="sec">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Capabilities</div>
@@ -1096,7 +1091,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- HOW IT WORKS -->
-<section id="process" class="sec" data-reveal>
+<section id="process" class="sec">
   <div class="wrap">
     <div class="sec-head rv" style="text-align:center">
       <div class="sec-label" style="justify-content:center">Process</div>
@@ -1157,7 +1152,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- PRICING -->
-<section id="pricing" class="sec" data-reveal>
+<section id="pricing" class="sec">
   <div class="wrap">
     <div class="sec-head rv" style="text-align:center">
       <div class="sec-label" style="justify-content:center">Pricing</div>
@@ -1208,7 +1203,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- TESTIMONIALS -->
-<section id="testimonials" class="sec" data-reveal>
+<section id="testimonials" class="sec">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Client Voices</div>
@@ -1230,7 +1225,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- FAQ -->
-<section id="faq" class="sec" data-reveal>
+<section id="faq" class="sec">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">FAQ</div>
@@ -1257,7 +1252,7 @@ body:hover .cursor-glow{opacity:1}
 </div>
 
 <!-- TOOLS -->
-<section id="tools" class="sec" data-reveal>
+<section id="tools" class="sec">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Free Tools</div>
@@ -1399,7 +1394,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- TRENDS -->
-<section id="trends" class="sec" data-reveal>
+<section id="trends" class="sec">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-label">Trending Now</div>
@@ -1448,7 +1443,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- ORDER -->
-<section id="order" class="sec" data-reveal>
+<section id="order" class="sec">
   <div class="wrap">
     <div class="order-grid">
       <div class="rv">
@@ -1517,7 +1512,7 @@ body:hover .cursor-glow{opacity:1}
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="sec" data-reveal>
+<section id="contact" class="sec">
   <div class="wrap">
     <div class="contact-grid">
       <div class="rv">
@@ -1616,9 +1611,31 @@ const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.ta
 function initReveal(){document.querySelectorAll('.rv').forEach(el=>{el.classList.remove('vis');obs.observe(el)})}
 initReveal();
 
-// ===== SECTION REVEAL =====
-const revealObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');revealObs.unobserve(e.target)}})},{threshold:0.1});
-document.querySelectorAll('[data-reveal]').forEach(el=>revealObs.observe(el));
+// ===== MAGNETIC PULL EFFECT =====
+(function(){
+  if(window.innerWidth<769||matchMedia('(hover:none)').matches)return;
+  const magneticEls=document.querySelectorAll('.work-card,.price-card,.testi-card,.tool-card,.trend-card,.order-feat');
+  magneticEls.forEach(function(el){
+    el.addEventListener('mousemove',function(e){
+      var rect=el.getBoundingClientRect();
+      var cx=rect.left+rect.width/2;
+      var cy=rect.top+rect.height/2;
+      var dx=e.clientX-cx;
+      var dy=e.clientY-cy;
+      var dist=Math.sqrt(dx*dx+dy*dy);
+      var maxDist=200;
+      if(dist<maxDist){
+        var force=(1-dist/maxDist)*12;
+        el.style.transform='translate('+(dx/dist*force)+'px,'+(dy/dist*force)+'px)';
+        el.style.transition='transform .15s ease-out';
+      }
+    });
+    el.addEventListener('mouseleave',function(){
+      el.style.transform='translate(0,0)';
+      el.style.transition='transform .4s cubic-bezier(.16,1,.3,1)';
+    });
+  });
+})();
 
 // ===== NAV SCROLL =====
 window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>50);document.getElementById('scrollTop').classList.toggle('show',window.scrollY>500);document.getElementById('sharePanel').classList.toggle('show',window.scrollY>300)},{passive:true});
