@@ -949,56 +949,56 @@ function generateReceipt(order){
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 @page{size:A5 landscape;margin:0}
-body{font-family:'Inter',system-ui,sans-serif;background:#d1d5db;color:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1.5rem}
-.bill{width:100%;max-width:780px;background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12);border-radius:2px}
-.bill-stripe{display:flex;height:6px}.bill-stripe div{flex:1}.bill-stripe div:nth-child(1){background:#c8ff00}.bill-stripe div:nth-child(2){background:#00e5ff}.bill-stripe div:nth-child(3){background:#c8ff00}
-.bill-header{display:flex;align-items:center;justify-content:space-between;padding:1.75rem 2rem 1.25rem;border-bottom:2px dashed #e5e5e5}
+body{font-family:'Inter',system-ui,sans-serif;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1.5rem}
+.bill{width:100%;max-width:780px;background:#0a0a0a;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid #1a1a1a;border-radius:2px}
+.bill-stripe{display:flex;height:4px}.bill-stripe div{flex:1}.bill-stripe div:nth-child(1){background:#c8ff00}.bill-stripe div:nth-child(2){background:#00e5ff}.bill-stripe div:nth-child(3){background:#c8ff00}
+.bill-header{display:flex;align-items:center;justify-content:space-between;padding:2rem 2rem 1.5rem;border-bottom:1px solid #1a1a1a;background:#0a0a0a}
 .bill-logo-area{display:flex;align-items:center;gap:1rem}
-.bill-logo{height:56px;width:auto;object-fit:contain}
+.bill-logo{height:60px;width:auto;object-fit:contain}
 .bill-brand{display:flex;flex-direction:column}
-.bill-brand-name{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:#0a0a0a;line-height:1}
+.bill-brand-name{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:#fff;line-height:1}
 .bill-brand-name em{font-style:italic;color:#c8ff00}
-.bill-brand-sub{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:#999;margin-top:2px}
+.bill-brand-sub{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:#555;margin-top:4px}
 .bill-header-right{text-align:right}
-.bill-type{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.25em;text-transform:uppercase;color:#0a0a0a;background:#c8ff00;display:inline-block;padding:3px 12px;margin-bottom:6px;font-weight:600}
-.bill-receipt-num{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:#111;letter-spacing:0.03em}
-.bill-date-text{font-size:0.7rem;color:#888;margin-top:3px}
+.bill-type{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.25em;text-transform:uppercase;color:#0a0a0a;background:#c8ff00;display:inline-block;padding:3px 12px;margin-bottom:8px;font-weight:700}
+.bill-receipt-num{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:#c8ff00;letter-spacing:0.03em}
+.bill-date-text{font-size:0.7rem;color:#555;margin-top:4px}
 .bill-body{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0 2rem}
-.bill-col-left{padding:1.25rem 1.25rem 1.25rem 0;border-right:1px dashed #e5e5e5}
-.bill-col-right{padding:1.25rem 0 1.25rem 1.25rem}
+.bill-col-left{padding:1.5rem 1.5rem 1.5rem 0;border-right:1px solid #1a1a1a}
+.bill-col-right{padding:1.5rem 0 1.5rem 1.5rem}
 .bill-col-title{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:#c8ff00;margin-bottom:0.75rem;font-weight:600;display:flex;align-items:center;gap:6px}
 .bill-col-title::before{content:'';width:12px;height:1px;background:#c8ff00}
-.bill-field{margin-bottom:0.6rem}.bill-field:last-child{margin-bottom:0}
-.bill-field-label{font-family:'JetBrains Mono',monospace;font-size:0.45rem;letter-spacing:0.15em;text-transform:uppercase;color:#aaa;margin-bottom:1px}
-.bill-field-val{font-size:0.82rem;font-weight:600;color:#111;word-break:break-word;line-height:1.4}
+.bill-field{margin-bottom:0.65rem}.bill-field:last-child{margin-bottom:0}
+.bill-field-label{font-family:'JetBrains Mono',monospace;font-size:0.45rem;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px}
+.bill-field-val{font-size:0.82rem;font-weight:600;color:#e5e5e5;word-break:break-word;line-height:1.4}
 .bill-status{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:700;letter-spacing:0.1em}
 .bill-status-dot{width:6px;height:6px;border-radius:50%}
-.bill-table-wrap{padding:0 2rem;border-top:1px dashed #e5e5e5}
-.bill-table-title{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:#c8ff00;padding:1rem 0 0.5rem;font-weight:600;display:flex;align-items:center;gap:6px}
+.bill-table-wrap{padding:0 2rem;border-top:1px solid #1a1a1a}
+.bill-table-title{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:#c8ff00;padding:1.25rem 0 0.5rem;font-weight:600;display:flex;align-items:center;gap:6px}
 .bill-table-title::before{content:'';width:12px;height:1px;background:#c8ff00}
 .bill-table{width:100%;border-collapse:collapse;font-size:0.78rem}
-.bill-table th{font-family:'JetBrains Mono',monospace;font-size:0.45rem;letter-spacing:0.15em;text-transform:uppercase;color:#999;font-weight:500;text-align:left;padding:0.5rem 0;border-bottom:1px solid #eee}
-.bill-table td{padding:0.55rem 0;border-bottom:1px solid #f5f5f5;color:#333;vertical-align:top}
-.bill-table td:last-child{text-align:right;font-weight:600}
+.bill-table th{font-family:'JetBrains Mono',monospace;font-size:0.45rem;letter-spacing:0.15em;text-transform:uppercase;color:#555;font-weight:500;text-align:left;padding:0.5rem 0;border-bottom:1px solid #1a1a1a}
+.bill-table td{padding:0.55rem 0;border-bottom:1px solid #141414;color:#ccc;vertical-align:top}
+.bill-table td:last-child{text-align:right;font-weight:600;color:#e5e5e5}
 .bill-table tr:last-child td{border-bottom:none}
-.bill-table .bill-total-row td{border-top:2px solid #111;border-bottom:none;padding-top:0.75rem;font-weight:700;font-size:0.85rem;color:#111}
-.bill-brief-wrap{padding:0 2rem 1.25rem}
-.bill-brief-box{background:#f9fafb;border:1px solid #eee;border-radius:4px;padding:1rem 1.25rem}
+.bill-table .bill-total-row td{border-top:1px solid #c8ff00;border-bottom:none;padding-top:0.75rem;font-weight:700;font-size:0.85rem;color:#c8ff00}
+.bill-brief-wrap{padding:0 2rem 1.5rem}
+.bill-brief-box{background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:1rem 1.25rem}
 .bill-brief-label{font-family:'JetBrains Mono',monospace;font-size:0.45rem;letter-spacing:0.15em;text-transform:uppercase;color:#c8ff00;margin-bottom:0.4rem;font-weight:600}
-.bill-brief-text{font-size:0.75rem;color:#555;line-height:1.7;word-break:break-word}
-.bill-footer{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-top:2px dashed #e5e5e5;background:#fafafa;gap:1rem}
+.bill-brief-text{font-size:0.75rem;color:#888;line-height:1.7;word-break:break-word}
+.bill-footer{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;border-top:1px solid #1a1a1a;background:#080808;gap:1rem}
 .bill-footer-left{display:flex;align-items:center;gap:0.75rem}
-.bill-footer-logo{height:22px;opacity:0.5;object-fit:contain}
-.bill-footer-info{font-size:0.6rem;color:#999;line-height:1.6}
+.bill-footer-logo{height:24px;opacity:0.4;object-fit:contain}
+.bill-footer-info{font-size:0.6rem;color:#444;line-height:1.6}
 .bill-footer-right{text-align:right}
-.bill-footer-thanks{font-family:'Playfair Display',serif;font-size:0.85rem;font-style:italic;color:#333}
-.bill-footer-website{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#bbb;margin-top:2px;letter-spacing:0.08em}
-.bill-actions{display:flex;gap:0;border-top:1px solid #eee}
+.bill-footer-thanks{font-family:'Playfair Display',serif;font-size:0.85rem;font-style:italic;color:#e5e5e5}
+.bill-footer-website{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#333;margin-top:3px;letter-spacing:0.08em}
+.bill-actions{display:flex;gap:0;border-top:1px solid #1a1a1a}
 .bill-btn{flex:1;padding:0.85rem;font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:700;border:none;cursor:pointer;transition:all .15s;letter-spacing:0.06em;text-transform:uppercase;text-align:center}
-.bill-btn-print{background:#0a0a0a;color:#fff}.bill-btn-print:hover{background:#222}
-.bill-btn-close{background:#f5f5f5;color:#888;border-left:1px solid #eee}.bill-btn-close:hover{background:#eee;color:#333}
-@media print{body{background:#fff;padding:0;display:block}@page{size:A5 landscape;margin:8mm}.bill{box-shadow:none;border-radius:0;max-width:100%;page-break-inside:avoid}.bill-actions{display:none !important}.bill-stripe,.bill-header,.bill-status,.bill-type{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-@media(max-width:600px){body{padding:0.5rem}.bill-header,.bill-body,.bill-table-wrap,.bill-brief-wrap,.bill-footer{padding-left:1.25rem;padding-right:1.25rem}.bill-logo{height:40px}.bill-brand-name{font-size:1.3rem}.bill-header-right{text-align:left;margin-top:0.75rem}.bill-header{flex-direction:column;align-items:flex-start;gap:0.75rem}.bill-body{grid-template-columns:1fr}.bill-col-left{border-right:none;border-bottom:1px dashed #e5e5e5;padding:1rem 0}.bill-col-right{padding:1rem 0 0}.bill-actions{flex-direction:column}.bill-btn-close{border-left:none;border-top:1px solid #eee}.bill-footer{flex-direction:column;text-align:center;gap:0.75rem}.bill-footer-right{text-align:center}}
+.bill-btn-print{background:#c8ff00;color:#0a0a0a}.bill-btn-print:hover{background:#d4ff33}
+.bill-btn-close{background:#111;color:#555;border-left:1px solid #1a1a1a}.bill-btn-close:hover{background:#1a1a1a;color:#ccc}
+@media print{body{background:#0a0a0a;padding:0;display:block}@page{size:A5 landscape;margin:8mm}.bill{box-shadow:none;border-radius:0;border:none;max-width:100%;page-break-inside:avoid}.bill-actions{display:none !important}.bill-stripe,.bill-header,.bill-status,.bill-type,.bill-btn-print{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+@media(max-width:600px){body{padding:0.5rem}.bill-header,.bill-body,.bill-table-wrap,.bill-brief-wrap,.bill-footer{padding-left:1.25rem;padding-right:1.25rem}.bill-logo{height:42px}.bill-brand-name{font-size:1.3rem}.bill-header-right{text-align:left;margin-top:0.75rem}.bill-header{flex-direction:column;align-items:flex-start;gap:0.75rem}.bill-body{grid-template-columns:1fr}.bill-col-left{border-right:none;border-bottom:1px solid #1a1a1a;padding:1rem 0}.bill-col-right{padding:1rem 0 0}.bill-actions{flex-direction:column}.bill-btn-close{border-left:none;border-top:1px solid #1a1a1a}.bill-footer{flex-direction:column;text-align:center;gap:0.75rem}.bill-footer-right{text-align:center}}
 </style>
 </head>
 <body>
