@@ -1872,7 +1872,7 @@ function generateReceipt(order){
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-@page{size:A5 landscape;margin:0}
+@page{size:auto;margin:0}
 body{font-family:'Inter',system-ui,sans-serif;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1.5rem}
 .bill{width:100%;max-width:780px;background:#0a0a0a;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid #1a1a1a;border-radius:2px}
 .bill-stripe{display:flex;height:4px}
@@ -1930,10 +1930,28 @@ body{font-family:'Inter',system-ui,sans-serif;background:#111;color:#fff;display
 .bill-btn-close:hover{background:#1a1a1a;color:#ccc}
 @media print{
   body{background:#0a0a0a;padding:0;display:block}
-  @page{size:A5 landscape;margin:8mm}
-  .bill{box-shadow:none;border-radius:0;border:none;max-width:100%;page-break-inside:avoid}
+  @page{size:A4 portrait;margin:8mm}
+  .bill{box-shadow:none;border-radius:0;border:none;max-width:100%;width:100%;page-break-inside:avoid;overflow:hidden}
+  .bill>*{page-break-inside:avoid}
   .bill-actions{display:none !important}
   .bill-stripe,.bill-header,.bill-status,.bill-type,.bill-btn-print{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .bill-header{padding:1.25rem 1.5rem 1rem}
+  .bill-logo{height:40px}
+  .bill-brand-name{font-size:1.3rem}
+  .bill-body{padding:0 1.5rem}
+  .bill-col-left{padding:0.75rem 0.75rem 0.75rem 0}
+  .bill-col-right{padding:0.75rem 0 0.75rem 0.75rem}
+  .bill-field{margin-bottom:0.35rem}
+  .bill-table-wrap{padding:0 1.5rem}
+  .bill-table-title{padding:0.75rem 0 0.35rem}
+  .bill-table th,.bill-table td{padding:0.35rem 0;font-size:0.7rem}
+  .bill-table .bill-total-row td{padding-top:0.5rem;font-size:0.75rem}
+  .bill-brief-wrap{padding:0 1.5rem 0.75rem}
+  .bill-brief-box{padding:0.6rem 0.85rem}
+  .bill-brief-text{font-size:0.68rem;line-height:1.5;max-height:3.5em;overflow:hidden}
+  .bill-footer{padding:0.75rem 1.5rem}
+  .bill-footer-logo{height:18px}
+  .bill-footer-thanks{font-size:0.75rem}
 }
 @media(max-width:600px){
   body{padding:0.5rem}
