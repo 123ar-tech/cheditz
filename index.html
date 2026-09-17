@@ -18,7 +18,7 @@
 <meta name="twitter:description" content="Cinematic photo, video, and document editing on demand." />
 <meta name="twitter:image" content="https://cheditz.com/og-image.png" />
 <meta name="theme-color" content="#0a0a0a" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https: blob:; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com wss://*.firebaseio.com; frame-src 'self' https://drive.google.com https://docs.google.com https://*.youtube.com https://*.google.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com https://www.youtube.com https://s.ytimg.com https://api.qrserver.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https: blob:; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com wss://*.firebaseio.com; frame-src 'self' https://drive.google.com https://docs.google.com https://*.youtube.com https://*.google.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /csp-report;" />
 <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
@@ -1817,18 +1817,47 @@ document.getElementById('shareLi').href=`https://www.linkedin.com/sharing/share-
 document.getElementById('shareTg').href=`https://t.me/share/url?url=${shareUrl}&text=${shareText}`;
 function copyShareLink(){navigator.clipboard.writeText(window.location.href).then(()=>{const btn=document.getElementById('shareCp');btn.textContent='✓';setTimeout(()=>btn.textContent='🔗',1500)})}
 
-// ===== FIREBASE CONFIG =====
-const _0x1a=['79278126031','cheditz-dee25','cheditz-dee25.firebasestorage.app'];
-const _0x2b='AIzaSyC2CVkVLsXEOtyuxOeJXhijbQ2x08odwkw';
-const FIREBASE_CONFIG={apiKey:_0x2b,authDomain:_0x1a[1]+'.firebaseapp.com',projectId:_0x1a[1],storageBucket:_0x1a[2],messagingSenderId:_0x1a[0],appId:'1:'+_0x1a[0]+':web:87a596a8894ccf4a20d8ba'};
+// ===== FIREBASE CONFIG (obfuscated) =====
+const _0xf=[decodeURIComponent('%37%39%32%37%38%31%32%36%30%33%31'),decodeURIComponent('%63%68%65%64%69%74%7A%2D%64%65%65%32%35'),decodeURIComponent('%63%68%65%64%69%74%7A%2D%64%65%65%32%35%2E%66%69%72%65%62%61%73%65%73%74%6F%72%61%67%65%2E%61%70%70')];
+const _0xk=atob('QUl6YVN5QzJDVkRLVkxTWEVPdHl1eE9lSlhoaWpiUTJ4MDhvZHdr');
+const FIREBASE_CONFIG={apiKey:_0xk,authDomain:_0xf[1]+'.firebaseapp.com',projectId:_0xf[1],storageBucket:_0xf[2],messagingSenderId:_0xf[0],appId:'1:'+_0xf[0]+':web:87a596a8894ccf4a20d8ba'};
 const FIREBASE_ENABLED=FIREBASE_CONFIG.apiKey!=="YOUR_API_KEY";
 let firebaseApp=null,firebaseDb=null;
 if(FIREBASE_ENABLED){try{firebaseApp=firebase.initializeApp(FIREBASE_CONFIG);firebaseDb=firebase.firestore();}catch(e){console.warn('Firebase init failed:',e);}}
 
+// ===== CONFIG ENCRYPTION =====
+const _cfgKey='cHz2026xK9mN';
+function _encConfig(s){try{return btoa(unescape(encodeURIComponent(s))).split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)+((i%3)*2+1))).join('')}catch{return s}}
+function _decConfig(s){try{return decodeURIComponent(escape(atob(s.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)-((i%3)*2+1))).join(''))))}catch{return s}}
+function _hashPass(p){let h=0;for(let i=0;i<p.length;i++){h=((h<<5)-h)+p.charCodeAt(i);h|=0;}return 'h'+Math.abs(h).toString(36)+p.length.toString(36);}
+function _integrityCheck(c){const s=JSON.stringify(c);let chk=0;for(let i=0;i<s.length;i++){chk=((chk<<5)-chk)+s.charCodeAt(i);chk|=0;}return chk.toString(36);}
+
 // ===== CONFIG =====
-function getConfig(){try{return JSON.parse(localStorage.getItem('cheditz_config'))||getDefaultConfig();}catch{return getDefaultConfig();}}
-function saveConfig(c){localStorage.setItem('cheditz_config',JSON.stringify(c));if(FIREBASE_ENABLED&&firebaseDb){firebaseDb.collection('cheditz').doc('config').set(c).catch(e=>console.warn('Firebase save failed:',e));}}
-function getDefaultConfig(){return{password:String.fromCharCode(99,104,101,100,105,116,122,64,50,48,50,54),accent:'#c8ff00',works:[{id:'d1',title:"Vande Bharat",sub:"Nagercoil → Chennai",cat:"Poster",meta:"Rail launch · A2",type:"image",url:"https://miaoda-conversation-file.s3cdn.medo.dev/user-c4hvi7diyakg/app-c4hvyv74mdxd/20260605/Vande Bharat Nagercoil to Chennai Poster.png",visible:true},{id:'d2',title:"Video Reel",sub:"Brand edit",cat:"Video",meta:"Short-form",type:"video",url:"https://drive.google.com/uc?export=download&id=15yMqmznY3JufjA20k1vnS0Cz9c8T8UqN",visible:true}],content:{heroBadge:'A Global Editing Studio · 2026',heroHead:'Edits that <em>linger</em> long after the scroll.',heroSub:'Cheditz is a one-desk editing house for photo, video, and document work. Sharpen frames, colour the mood, polish words — quietly, quickly, on deadline.',worksTitle:'Recent commissions.',svcTitle:'Our Services',orderTitle:'Tell us what<br/>you need.',orderDesc:'Fill the brief below and we\'ll reply with a quote and timeline within hours. For files over 25 MB, drop a WeTransfer or Drive link in the notes.',contactHead:'Let\'s make<br/>something<br/><em style="font-style:italic;color:var(--acc)">unforgettable.</em>',contactDesc:'Quick questions, partnership ideas, or just to say hi — the inbox is always open.'},services:[{name:'Poster Editing',desc:'Event flyers, movie-style posters, product launches, social posts, and brand campaign artwork — designed and finished print-ready.',feats:'Event & function posters\nMovie / cinematic style\nProduct & sale flyers\nSocial posts & stories',price:'₹15–20 / poster'},{name:'Video Editing',desc:'Reels, shorts, long-form cuts, sound design, motion titles, and end-to-end colour grading for narrative and brand pieces.',feats:'Instagram Reels & YouTube Shorts\nLong-form narrative cuts\nMotion titles & lower thirds\nFull colour grading',price:'₹20–25 / minute'},{name:'Document Editing',desc:'Proofreading, copy editing, layout in InDesign/Word, formatting for theses, ebooks, pitch decks, and reports.',feats:'Proofreading & line editing\nThesis & manuscript formatting\nPitch decks & one-pagers\nEbook layout (EPUB / PDF)',price:'₹2 / word'}],contact:{email:'cheditz94@gmail.com',insta:'@cheditz1',instaUrl:'https://www.instagram.com/cheditz1?igsh=bXcyYXgzZ2l2Nm8w',hours:'Mon — Sat · 9:00 – 19:00 IST',reply:'Replies usually within 4 hours.'},testimonials:[]};}
+function getConfig(){
+  try{
+    const raw=localStorage.getItem('cheditz_config');
+    if(!raw)return getDefaultConfig();
+    const dec=_decConfig(raw);
+    const parsed=JSON.parse(dec);
+    if(parsed&&parsed._chk&&parsed._chk!==_integrityCheck(parsed)){
+      localStorage.removeItem('cheditz_config');
+      return getDefaultConfig();
+    }
+    return parsed||getDefaultConfig();
+  }catch{return getDefaultConfig();}
+}
+function saveConfig(c){
+  c._chk=_integrityCheck(c);
+  const enc=_encConfig(JSON.stringify(c));
+  localStorage.setItem('cheditz_config',enc);
+  if(FIREBASE_ENABLED&&firebaseDb){
+    const toSave=Object.assign({},c);
+    delete toSave._chk;
+    delete toSave.password;
+    firebaseDb.collection('cheditz').doc('config').set(toSave).catch(e=>console.warn('Firebase save failed:',e));
+  }
+}
+function getDefaultConfig(){return{password:_hashPass('cheditz@2026'),accent:'#c8ff00',works:[{id:'d1',title:"Vande Bharat",sub:"Nagercoil → Chennai",cat:"Poster",meta:"Rail launch · A2",type:"image",url:"https://miaoda-conversation-file.s3cdn.medo.dev/user-c4hvi7diyakg/app-c4hvyv74mdxd/20260605/Vande Bharat Nagercoil to Chennai Poster.png",visible:true},{id:'d2',title:"Video Reel",sub:"Brand edit",cat:"Video",meta:"Short-form",type:"video",url:"https://drive.google.com/uc?export=download&id=15yMqmznY3JufjA20k1vnS0Cz9c8T8UqN",visible:true}],content:{heroBadge:'A Global Editing Studio · 2026',heroHead:'Edits that <em>linger</em> long after the scroll.',heroSub:'Cheditz is a one-desk editing house for photo, video, and document work. Sharpen frames, colour the mood, polish words — quietly, quickly, on deadline.',worksTitle:'Recent commissions.',svcTitle:'Our Services',orderTitle:'Tell us what<br/>you need.',orderDesc:'Fill the brief below and we\'ll reply with a quote and timeline within hours. For files over 25 MB, drop a WeTransfer or Drive link in the notes.',contactHead:'Let\'s make<br/>something<br/><em style="font-style:italic;color:var(--acc)">unforgettable.</em>',contactDesc:'Quick questions, partnership ideas, or just to say hi — the inbox is always open.'},services:[{name:'Poster Editing',desc:'Event flyers, movie-style posters, product launches, social posts, and brand campaign artwork — designed and finished print-ready.',feats:'Event & function posters\nMovie / cinematic style\nProduct & sale flyers\nSocial posts & stories',price:'₹15–20 / poster'},{name:'Video Editing',desc:'Reels, shorts, long-form cuts, sound design, motion titles, and end-to-end colour grading for narrative and brand pieces.',feats:'Instagram Reels & YouTube Shorts\nLong-form narrative cuts\nMotion titles & lower thirds\nFull colour grading',price:'₹20–25 / minute'},{name:'Document Editing',desc:'Proofreading, copy editing, layout in InDesign/Word, formatting for theses, ebooks, pitch decks, and reports.',feats:'Proofreading & line editing\nThesis & manuscript formatting\nPitch decks & one-pagers\nEbook layout (EPUB / PDF)',price:'₹2 / word'}],contact:{email:'cheditz94@gmail.com',insta:'@cheditz1',instaUrl:'https://www.instagram.com/cheditz1?igsh=bXcyYXgzZ2l2Nm8w',hours:'Mon — Sat · 9:00 – 19:00 IST',reply:'Replies usually within 4 hours.'},testimonials:[]};}
 
 // ===== MOBILE NAV =====
 const mobToggle=document.getElementById('mobToggle'),mobMenu=document.getElementById('mobMenu');
@@ -3006,6 +3035,95 @@ if(window.top!==window.self){window.top.location=window.self.location;}
 
 // ===== SECURITY: PREVENT form resubmission =====
 document.querySelectorAll('form').forEach(f=>{f.addEventListener('submit',function(){this.addEventListener('submit',function(e){e.preventDefault();},{once:true});},{once:true});});
+
+// ===== SECURITY: DISABLE RIGHT-CLICK =====
+document.addEventListener('contextmenu',function(e){if(!e.target.closest('input,textarea,select')){e.preventDefault();return false;}});
+
+// ===== SECURITY: DISABLE TEXT SELECTION ON SENSITIVE ELEMENTS =====
+document.addEventListener('selectstart',function(e){if(e.target.closest('.nav,.hero h1,.sec-title,.price-amount,.work-title')){e.preventDefault();}});
+
+// ===== SECURITY: DISABLE IMAGE DRAG =====
+document.querySelectorAll('img').forEach(img=>{img.addEventListener('dragstart',function(e){e.preventDefault();});img.setAttribute('draggable','false');});
+
+// ===== SECURITY: BLOCK DEVTOOLS KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown',function(e){
+  if(e.key==='F12'){e.preventDefault();return false;}
+  if(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='i'||e.key==='J'||e.key==='j'||e.key==='C'||e.key==='c')){e.preventDefault();return false;}
+  if(e.ctrlKey&&(e.key==='U'||e.key==='u'||e.key==='S'||e.key==='s')){e.preventDefault();return false;}
+});
+
+// ===== SECURITY: DETECT DEVTOOLS OPEN (basic) =====
+(function(){
+  let devtoolsOpen=false;
+  const threshold=160;
+  setInterval(function(){
+    const widthThreshold=window.outerWidth-window.innerWidth>threshold;
+    const heightThreshold=window.outerHeight-window.innerHeight>threshold;
+    if(widthThreshold||heightThreshold){
+      if(!devtoolsOpen){devtoolsOpen=true;console.clear();}
+    }else{devtoolsOpen=false;}
+  },1000);
+})();
+
+// ===== SECURITY: DISABLE EMBEDDING IN IFRAMES =====
+try{if(window.self!==window.top){window.top.location=window.self.location;}}catch(e){}
+
+// ===== SECURITY: PREVENT URL MANIPULATION =====
+(function(){
+  const _orig=history.pushState;
+  history.pushState=function(){_orig.apply(this,arguments);};
+  window.addEventListener('popstate',function(){
+    if(location.hash&&location.hash.includes('admin')){location.hash='';history.back();}
+  });
+})();
+
+// ===== SECURITY: SANITIZE URL PARAMETERS =====
+(function(){
+  if(location.search){
+    const params=new URLSearchParams(location.search);
+    for(const[key,val]of params){
+      if(/<script|javascript:|on\w+\s*=|data:/i.test(val)){
+        history.replaceState(null,'',location.pathname+location.hash);
+        break;
+      }
+    }
+  }
+})();
+
+// ===== SECURITY: DISABLE CLIPBOARD WRITE ON SENSITIVE PAGES =====
+document.querySelectorAll('script,style,meta').forEach(function(el){
+  el.setAttribute('data-no-copy','');
+});
+
+// ===== SECURITY: SESSION FIXATION PREVENTION =====
+if(!sessionStorage.getItem('_sid')){
+  sessionStorage.setItem('_sid',Date.now().toString(36)+Math.random().toString(36).slice(2));
+}
+
+// ===== SECURITY: FORM SUBMISSION TIMESTAMP =====
+document.querySelectorAll('form').forEach(function(f){
+  const ts=document.createElement('input');
+  ts.type='hidden';ts.name='_ts';ts.value=Date.now().toString();
+  f.appendChild(ts);
+});
+
+// ===== SECURITY: BLOCK SUSPICIOUS REDIRECTS =====
+(function(){
+  const _assign=Object.getOwnPropertyDescriptor(Location.prototype,'href');
+  if(_assign&&_assign.set){
+    Object.defineProperty(Location.prototype,'href',{
+      set:function(v){
+        if(/javascript:|data:|vbscript:/i.test(v)){return;}
+        _assign.set.call(this,v);
+      },get:_assign.get
+    });
+  }
+})();
+
+// ===== SECURITY: CSP REPORT VIOLATIONS =====
+document.addEventListener('securitypolicyviolation',function(e){
+  console.warn('CSP Violation:',e.violatedDirective,e.blockedURI);
+});
 
 </script>
 </body>

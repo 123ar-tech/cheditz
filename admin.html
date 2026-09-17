@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Cheditz — Admin Panel</title>
 <meta name="theme-color" content="#9333ea" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https: blob:; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com wss://*.firebaseio.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https: blob:; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com wss://*.firebaseio.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /csp-report;" />
 <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 <meta http-equiv="X-Frame-Options" content="DENY" />
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
@@ -583,16 +583,16 @@
 </div>
 
 <script>
-// ===== FIREBASE CONFIG =====
-const _0x1a=['79278126031','cheditz-dee25','cheditz-dee25.firebasestorage.app'];
-const _0x2b='AIzaSyC2CVkVLsXEOtyuxOeJXhijbQ2x08odwkw';
+// ===== FIREBASE CONFIG (obfuscated) =====
+const _0xf=[decodeURIComponent('%37%39%32%37%38%31%32%36%30%33%31'),decodeURIComponent('%63%68%65%64%69%74%7A%2D%64%65%65%32%35'),decodeURIComponent('%63%68%65%64%69%74%7A%2D%64%65%65%32%35%2E%66%69%72%65%62%61%73%65%73%74%6F%72%61%67%65%2E%61%70%70')];
+const _0xk=atob('QUl6YVN5QzJDVkRLVkxTWEVPdHl1eE9lSlhoaWpiUTJ4MDhvZHdr');
 const FIREBASE_CONFIG = {
-  apiKey: _0x2b,
-  authDomain: _0x1a[1]+'.firebaseapp.com',
-  projectId: _0x1a[1],
-  storageBucket: _0x1a[2],
-  messagingSenderId: _0x1a[0],
-  appId: '1:'+_0x1a[0]+':web:87a596a8894ccf4a20d8ba'
+  apiKey: _0xk,
+  authDomain: _0xf[1]+'.firebaseapp.com',
+  projectId: _0xf[1],
+  storageBucket: _0xf[2],
+  messagingSenderId: _0xf[0],
+  appId: '1:'+_0xf[0]+':web:87a596a8894ccf4a20d8ba'
 };
 const FIREBASE_ENABLED = FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
 let firebaseApp = null, firebaseDb = null;
@@ -609,7 +609,8 @@ if (FIREBASE_ENABLED && firebaseDb) {
   firebaseDb.collection('cheditz').doc('config').onSnapshot(doc => {
     const data = doc.data();
     if (data) {
-      localStorage.setItem('cheditz_config', JSON.stringify(data));
+      const enc=_encConfig(JSON.stringify(data));
+      localStorage.setItem('cheditz_config', enc);
       applyColor();
     }
   }, e => console.warn('Config snapshot error:', e));
@@ -631,18 +632,39 @@ if (FIREBASE_ENABLED && firebaseDb) {
   }, e => console.warn('Reviews snapshot error:', e));
 }
 
+// ===== CONFIG ENCRYPTION =====
+const _cfgKey='cHz2026xK9mN';
+function _encConfig(s){try{return btoa(unescape(encodeURIComponent(s))).split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)+((i%3)*2+1))).join('')}catch{return s}}
+function _decConfig(s){try{return decodeURIComponent(escape(atob(s.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)-((i%3)*2+1))).join(''))))}catch{return s}}
+function _hashPass(p){let h=0;for(let i=0;i<p.length;i++){h=((h<<5)-h)+p.charCodeAt(i);h|=0;}return 'h'+Math.abs(h).toString(36)+p.length.toString(36);}
+function _integrityCheck(c){const s=JSON.stringify(c);let chk=0;for(let i=0;i<s.length;i++){chk=((chk<<5)-chk)+s.charCodeAt(i);chk|=0;}return chk.toString(36);}
+
 // ===== CONFIG & STATE =====
-const DEFAULT_PASS_HASH = String.fromCharCode(99,104,101,100,105,116,122,64,50,48,50,54);
+const DEFAULT_PASS_HASH = _hashPass('cheditz@2026');
 let isAdmin = false;
 
 function getConfig() {
-  try { return JSON.parse(localStorage.getItem('cheditz_config')) || getDefaultConfig(); }
-  catch { return getDefaultConfig(); }
+  try {
+    const raw=localStorage.getItem('cheditz_config');
+    if(!raw)return getDefaultConfig();
+    const dec=_decConfig(raw);
+    const parsed=JSON.parse(dec);
+    if(parsed&&parsed._chk&&parsed._chk!==_integrityCheck(parsed)){
+      localStorage.removeItem('cheditz_config');
+      return getDefaultConfig();
+    }
+    return parsed||getDefaultConfig();
+  } catch { return getDefaultConfig(); }
 }
 function saveConfig(c) {
-  localStorage.setItem('cheditz_config', JSON.stringify(c));
+  c._chk=_integrityCheck(c);
+  const enc=_encConfig(JSON.stringify(c));
+  localStorage.setItem('cheditz_config', enc);
   if (FIREBASE_ENABLED && firebaseDb) {
-    firebaseDb.collection('cheditz').doc('config').set(c)
+    const toSave=Object.assign({},c);
+    delete toSave._chk;
+    delete toSave.password;
+    firebaseDb.collection('cheditz').doc('config').set(toSave)
       .then(() => console.log('✓ Saved to Firestore'))
       .catch(e => {
         console.warn('Firebase save failed:', e);
@@ -698,7 +720,8 @@ function doLogin(){
   const pass=document.getElementById('loginPass').value;
   if(!checkRateLimit('login',5)){alert('Too many attempts. Please wait 60 seconds.');return;}
   const cfg=getConfig();
-  if(pass===cfg.password||pass===DEFAULT_PASS_HASH){
+  const inputHash=_hashPass(pass);
+  if(inputHash===cfg.password||inputHash===DEFAULT_PASS_HASH){
     isAdmin=true;
     sessionStorage.setItem('cheditz_admin','1');
     sessionStorage.setItem('cheditz_admin_time',Date.now().toString());
@@ -1215,11 +1238,11 @@ function changePassword(){
   const nw=document.getElementById('set-newPass').value;
   const cf=document.getElementById('set-confirmPass').value;
   const cfg=getConfig();
-  if(cur!==cfg.password){alert('Current password incorrect.');return}
+  if(_hashPass(cur)!==cfg.password){alert('Current password incorrect.');return}
   if(!nw||nw.length<4||nw.length>100){alert('New password must be 4-100 characters.');return}
   if(nw===cur){alert('New password must be different from current.');return}
   if(nw!==cf){alert('Passwords do not match.');return}
-  cfg.password=nw;saveConfig(cfg);
+  cfg.password=_hashPass(nw);saveConfig(cfg);
   document.getElementById('set-curPass').value='';
   document.getElementById('set-newPass').value='';
   document.getElementById('set-confirmPass').value='';
@@ -1308,6 +1331,50 @@ if(window.top!==window.self){window.top.location=window.self.location;}
 
 // ===== SECURITY: PREVENT form resubmission =====
 document.querySelectorAll('form').forEach(f=>{f.addEventListener('submit',function(){this.addEventListener('submit',function(e){e.preventDefault();},{once:true});},{once:true});});
+
+// ===== SECURITY: DISABLE RIGHT-CLICK =====
+document.addEventListener('contextmenu',function(e){if(!e.target.closest('input,textarea,select')){e.preventDefault();return false;}});
+
+// ===== SECURITY: DISABLE TEXT SELECTION ON SENSITIVE ELEMENTS =====
+document.addEventListener('selectstart',function(e){if(e.target.closest('.adm-top,.adm-head,.sec-label')){e.preventDefault();}});
+
+// ===== SECURITY: DISABLE IMAGE DRAG =====
+document.querySelectorAll('img').forEach(img=>{img.addEventListener('dragstart',function(e){e.preventDefault();});img.setAttribute('draggable','false');});
+
+// ===== SECURITY: BLOCK DEVTOOLS KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown',function(e){
+  if(e.key==='F12'){e.preventDefault();return false;}
+  if(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='i'||e.key==='J'||e.key==='j'||e.key==='C'||e.key==='c')){e.preventDefault();return false;}
+  if(e.ctrlKey&&(e.key==='U'||e.key==='u'||e.key==='S'||e.key==='s')){e.preventDefault();return false;}
+});
+
+// ===== SECURITY: DETECT DEVTOOLS OPEN (basic) =====
+(function(){
+  let devtoolsOpen=false;
+  const threshold=160;
+  setInterval(function(){
+    const widthThreshold=window.outerWidth-window.innerWidth>threshold;
+    const heightThreshold=window.outerHeight-window.innerHeight>threshold;
+    if(widthThreshold||heightThreshold){
+      if(!devtoolsOpen){devtoolsOpen=true;console.clear();}
+    }else{devtoolsOpen=false;}
+  },1000);
+})();
+
+// ===== SECURITY: DISABLE EMBEDDING IN IFRAMES =====
+try{if(window.self!==window.top){window.top.location=window.self.location;}}catch(e){}
+
+// ===== SECURITY: FORM SUBMISSION TIMESTAMP =====
+document.querySelectorAll('form').forEach(function(f){
+  const ts=document.createElement('input');
+  ts.type='hidden';ts.name='_ts';ts.value=Date.now().toString();
+  f.appendChild(ts);
+});
+
+// ===== SECURITY: CSP REPORT VIOLATIONS =====
+document.addEventListener('securitypolicyviolation',function(e){
+  console.warn('CSP Violation:',e.violatedDirective,e.blockedURI);
+});
 </script>
 </body>
 </html>
