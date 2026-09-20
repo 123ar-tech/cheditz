@@ -355,64 +355,103 @@ img{max-width:100%;display:block}
 .faq-item.open .faq-a{max-height:400px}
 .faq-a-inner{padding:0 0 1.5rem;color:var(--dim);font-size:0.9rem;line-height:1.8}
 
-/* Order */
-.order-grid{display:grid;grid-template-columns:1fr;gap:4rem}
-@media(min-width:1024px){.order-grid{grid-template-columns:1fr 1.4fr}}
-.order-form{border:1px solid var(--edge);padding:2.5rem;display:flex;flex-direction:column;gap:1.25rem;border-radius:12px;background:var(--surface)}
+/* Order — 2026 Bento + Glassmorphism */
+.order-grid{display:grid;grid-template-columns:1fr;gap:3rem;align-items:start}
+@media(min-width:1024px){.order-grid{grid-template-columns:1fr 1.4fr;gap:4rem}}
 
-/* Live Project Card */
-.live-card{background:linear-gradient(135deg,var(--bg),var(--raised));border:1px solid var(--edge);border-radius:16px;padding:0 1.5rem;max-height:0;opacity:0;overflow:hidden;transition:all .5s cubic-bezier(.16,1,.3,1);pointer-events:none;margin:0}
-.live-card.visible{max-height:300px;padding:1.5rem;opacity:1;pointer-events:auto;margin-top:0.5rem}
-.live-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),transparent);opacity:0;transition:opacity .4s}
-.live-card.ready::before{opacity:1}
-.live-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.live-card-badge{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--acc);display:flex;align-items:center;gap:0.4rem}
-.live-card-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--acc);animation:liveDot 2s ease-in-out infinite}
-@keyframes liveDot{0%,100%{opacity:1}50%{opacity:0.3}}
-.live-card-status{font-size:0.6rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.08em}
-.live-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.live-card-field{display:flex;flex-direction:column;gap:0.2rem}
-.live-card-label{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
-.live-card-value{font-size:0.9rem;font-weight:600;color:var(--txt);min-height:1.3em;transition:color .3s}
-.live-card-value.empty{color:var(--muted);font-weight:400;font-style:italic}
-.live-card-divider{height:1px;background:var(--edge);margin:0.75rem 0}
-.live-card-footer{display:flex;align-items:center;gap:0.75rem}
-.live-card-avatar{width:32px;height:32px;border-radius:50%;background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.2);display:grid;place-items:center;font-size:0.8rem;flex-shrink:0;transition:all .3s}
-.live-card-avatar.has-name{background:var(--acc);border-color:var(--acc)}
-.live-card-avatar.has-name span{color:var(--bg)}
-.live-card-project{font-size:0.8rem;color:var(--dim);line-height:1.4}
-.live-card-project strong{color:var(--txt)}
-@media(max-width:768px){.live-card-grid{gap:0.75rem}.live-card{padding:0 1rem}.live-card.visible{padding:1.25rem}}
+/* Left Bento Column */
+.order-bento{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:1024px){.order-bento{position:sticky;top:6rem}}
+.order-bento-title{background:var(--surface);border:1px solid var(--edge);border-radius:16px;padding:2rem;display:flex;flex-direction:column;gap:0.5rem}
+.order-bento-title .sec-label{margin-bottom:0}
+.order-bento-title h2{font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(1.8rem,4vw,2.8rem);line-height:1;letter-spacing:-0.03em}
+.order-bento-title p{color:var(--dim);font-size:0.9rem;line-height:1.7;max-width:380px}
+.order-bento-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem}
+@media(min-width:1024px){.order-bento-steps{grid-template-columns:1fr}}
+.ob-step{background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:1.25rem;display:flex;align-items:flex-start;gap:0.85rem;transition:border-color .3s}
+.ob-step:hover{border-color:rgba(200,255,0,0.25)}
+.ob-step-num{width:36px;height:36px;border-radius:10px;background:rgba(200,255,0,0.08);border:1px solid rgba(200,255,0,0.15);display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;color:var(--acc);flex-shrink:0}
+.ob-step-text h4{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:0.2rem}
+.ob-step-text p{font-size:0.75rem;color:var(--muted);line-height:1.5}
+.order-bento-trust{background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem}
+.ob-trust-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--acc);line-height:1}
+.ob-trust-text{font-size:0.8rem;color:var(--dim);line-height:1.5}
+.order-bento-live{position:relative;background:linear-gradient(135deg,var(--bg),var(--raised));border:1px solid var(--edge);border-radius:16px;padding:0 1.5rem;max-height:0;opacity:0;overflow:hidden;transition:all .5s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.order-bento-live.visible{max-height:300px;padding:1.5rem;opacity:1;pointer-events:auto}
+.order-bento-live::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),transparent);opacity:0;transition:opacity .4s}
+.order-bento-live.ready::before{opacity:1}
+.ob-live-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+.ob-live-badge{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--acc);display:flex;align-items:center;gap:0.4rem}
+.ob-live-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--acc);animation:liveDot 2s ease-in-out infinite}
+.ob-live-status{font-size:0.55rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.08em}
+.ob-live-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.ob-live-field{display:flex;flex-direction:column;gap:0.15rem}
+.ob-live-label{font-family:'JetBrains Mono',monospace;font-size:0.45rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
+.ob-live-val{font-size:0.8rem;font-weight:600;color:var(--txt);min-height:1.2em;transition:color .3s}
+.ob-live-val.empty{color:var(--muted);font-weight:400;font-style:italic}
+.ob-live-divider{height:1px;background:var(--edge);margin:0.6rem 0}
+.ob-live-foot{display:flex;align-items:center;gap:0.6rem}
+.ob-live-avatar{width:28px;height:28px;border-radius:50%;background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.2);display:grid;place-items:center;font-size:0.7rem;flex-shrink:0;transition:all .3s}
+.ob-live-avatar.has-name{background:var(--acc);border-color:var(--acc)}
+.ob-live-avatar.has-name span{color:var(--bg)}
+.ob-live-project{font-size:0.75rem;color:var(--dim);line-height:1.4}
+.ob-live-project strong{color:var(--txt)}
 
-/* Order Timeline */
-.order-timeline{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;position:relative;padding:0 1rem}
-.order-timeline::before{content:'';position:absolute;top:18px;left:calc(1rem + 18px);right:calc(1rem + 18px);height:2px;background:var(--edge);z-index:0}
-.order-timeline::after{content:'';position:absolute;top:18px;left:calc(1rem + 18px);height:2px;background:var(--acc);z-index:1;width:0;transition:width .8s cubic-bezier(.16,1,.3,1)}
-.order-timeline.step-1::after{width:0%}
-.order-timeline.step-2::after{width:25%}
-.order-timeline.step-3::after{width:50%}
-.order-timeline.step-4::after{width:75%}
-.order-timeline.step-5::after{width:100%}
-.tl-step{display:flex;flex-direction:column;align-items:center;gap:0.5rem;position:relative;z-index:2;flex:1}
-.tl-dot{width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--edge);display:grid;place-items:center;font-size:0.9rem;transition:all .5s cubic-bezier(.16,1,.3,1);position:relative}
-.tl-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid transparent;transition:all .5s}
-.tl-step.active .tl-dot{border-color:var(--acc);background:rgba(200,255,0,0.1);box-shadow:0 0 20px rgba(200,255,0,0.2)}
-.tl-step.active .tl-dot::after{border-color:rgba(200,255,0,0.3);animation:tlPulse 2s ease-in-out infinite}
-.tl-step.done .tl-dot{border-color:var(--acc);background:var(--acc);box-shadow:0 0 16px rgba(200,255,0,0.3)}
-.tl-step.done .tl-dot::after{border:none}
-@keyframes tlPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.2);opacity:0.5}}
-.tl-label{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-align:center;transition:color .3s}
-.tl-step.active .tl-label,.tl-step.done .tl-label{color:var(--acc)}
-.tl-time{font-size:0.55rem;color:var(--muted);text-align:center;opacity:0;transition:opacity .3s .2s}
-.tl-step.active .tl-time,.tl-step.done .tl-time{opacity:1}
-@media(max-width:600px){
-  .order-timeline{padding:0;gap:0}
-  .order-timeline::before{left:calc(1rem + 14px);right:calc(1rem + 14px)}
-  .order-timeline::after{left:calc(1rem + 14px)}
-  .tl-dot{width:28px;height:28px;font-size:0.7rem}
-  .tl-label{font-size:0.45rem;letter-spacing:0.08em}
-  .tl-time{display:none}
+/* Glassmorphism Form Card */
+.order-form{position:relative;border:1px solid rgba(255,255,255,0.08);padding:0;display:flex;flex-direction:column;border-radius:20px;background:rgba(17,17,17,0.7);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05);overflow:hidden}
+.order-form::before{content:'';position:absolute;inset:-1px;border-radius:21px;background:linear-gradient(135deg,rgba(200,255,0,0.12),transparent 40%,transparent 60%,rgba(200,255,0,0.08));pointer-events:none;z-index:0;opacity:0;transition:opacity .5s}
+.order-form:focus-within::before{opacity:1}
+.order-form>*{position:relative;z-index:1}
+
+/* Step Indicator */
+.order-steps{display:flex;align-items:center;justify-content:center;gap:0;padding:1.25rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02)}
+.os-step{display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:center;position:relative}
+.os-step::after{content:'';position:absolute;top:50%;left:calc(50% + 18px);right:calc(-50% + 18px);height:1px;background:var(--edge);transform:translateY(-50%);transition:background .4s}
+.os-step:last-child::after{display:none}
+.os-step.done::after{background:var(--acc)}
+.os-num{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--edge);background:transparent;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:600;color:var(--muted);transition:all .4s cubic-bezier(.16,1,.3,1);flex-shrink:0}
+.os-step.active .os-num{border-color:var(--acc);background:rgba(200,255,0,0.1);color:var(--acc);box-shadow:0 0 16px rgba(200,255,0,0.15)}
+.os-step.done .os-num{border-color:var(--acc);background:var(--acc);color:var(--bg)}
+.os-label{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);transition:color .3s;white-space:nowrap}
+.os-step.active .os-label,.os-step.done .os-label{color:var(--acc)}
+
+/* Form Steps */
+.order-step-panel{display:none;padding:2rem 2rem 1.5rem;flex-direction:column;gap:1.25rem;animation:stepFadeIn .4s ease-out}
+.order-step-panel.active{display:flex}
+@keyframes stepFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.order-step-head{margin-bottom:0.5rem}
+.order-step-head h3{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.25rem}
+.order-step-head p{font-size:0.8rem;color:var(--muted)}
+.order-nav{display:flex;gap:0.75rem;padding:1.25rem 2rem;border-top:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02)}
+.order-nav .btn{flex:1;justify-content:center}
+.order-nav-back{background:transparent;border:1px solid var(--edge);color:var(--dim)}
+.order-nav-back:hover{border-color:var(--acc);color:var(--acc)}
+.order-nav-next{background:var(--acc);color:var(--bg)}
+.order-nav-next:hover{background:#b8e600}
+.order-submit-btn{width:100%;padding:1rem;background:linear-gradient(135deg,var(--acc),#a3d900);color:var(--bg);border:none;font-family:inherit;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.order-submit-btn:hover{box-shadow:0 4px 20px rgba(200,255,0,0.3);transform:translateY(-1px)}
+.order-submit-btn::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left .6s}
+.order-submit-btn:hover::after{left:100%}
+.order-form-footer{text-align:center;padding:0 2rem 1.5rem}
+.order-form-footer p{font-size:0.6rem;color:var(--muted)}
+.order-form-footer a{font-size:0.7rem;color:#25D366;text-decoration:none}
+
+@media(max-width:768px){
+  .order-bento-steps{grid-template-columns:1fr}
+  .order-steps{padding:1rem 1.25rem;gap:0}
+  .os-label{display:none}
+  .os-step::after{left:calc(50% + 14px);right:calc(-50% + 14px)}
+  .order-step-panel{padding:1.5rem 1.25rem 1rem}
+  .order-nav{padding:1rem 1.25rem}
+  .order-form-footer{padding:0 1.25rem 1.25rem}
+  .ob-live-grid{gap:0.6rem}
 }
+
+/* Legacy compat — hide old timeline */
+.order-timeline{display:none !important}
+
+/* Legacy compat — old live card inside form (hidden) */
+.live-card{display:none !important}
 .ff{display:flex;flex-direction:column;gap:0.35rem}
 .ff label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
 .ff input,.ff textarea,.ff select{background:transparent;border:1px solid var(--edge);color:var(--txt);padding:0.9rem 1rem;font-family:inherit;font-size:0.95rem;transition:border-color .2s;-webkit-appearance:none;width:100%;border-radius:8px}
@@ -861,7 +900,6 @@ body:hover .cursor-glow{opacity:1}
   .price-card{padding:1.5rem}
   .testi-grid{grid-template-columns:1fr !important}
   .order-grid{grid-template-columns:1fr !important}
-  .order-form{padding:1.5rem}
   .tools-grid{grid-template-columns:1fr !important}
   .trends-grid{grid-template-columns:1fr !important}
   .contact-grid{grid-template-columns:1fr !important;gap:2rem !important}
@@ -888,7 +926,6 @@ body:hover .cursor-glow{opacity:1}
   .hero-btns .btn{padding:0.7rem 1.2rem;font-size:0.65rem}
   .sec-title{font-size:1.4rem}
   .wrap{padding:0 1rem}
-  .order-form{padding:1.25rem}
   .price-card{padding:1.2rem}
 }
 
@@ -1005,8 +1042,7 @@ body:hover .cursor-glow{opacity:1}
   .stats-row{grid-template-columns:1fr 1fr !important}
   .process-steps,.pricing-grid,.testi-grid,.order-grid,.tools-grid,.trends-grid,.contact-grid{grid-template-columns:1fr !important}
   .price-card,.order-form,.tool-card,.trend-card,.testi-card{min-width:0}
-  .order-form{padding:1.25rem}
-  .ff-row,.live-card-grid{grid-template-columns:1fr !important}
+  .ff-row,.ob-live-grid{grid-template-columns:1fr !important}
   .ff input,.ff textarea,.ff select{font-size:16px}
   .resolution-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 
@@ -1457,7 +1493,7 @@ body:hover .cursor-glow{opacity:1}
           <div style="display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1rem;background:var(--raised);border:1px solid var(--edge);margin-bottom:1.25rem">
             <div>
               <div style="font-size:0.85rem;font-weight:600;color:var(--txt)">Rush Delivery</div>
-              <div style="font-size:0.7rem;color:var(--muted);margin-top:2px">24 hours · ₹50/item</div>
+              <div style="font-size:0.7rem;color:var(--muted);margin-top:2px">24 hours · ₹10 poster · ₹10 video · ₹3 doc</div>
             </div>
             <button id="calcRushToggle" onclick="toggleCalcRush()" style="width:48px;height:26px;border-radius:13px;background:var(--edge);border:none;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0">
               <div id="calcRushKnob" style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>
@@ -1630,93 +1666,109 @@ body:hover .cursor-glow{opacity:1}
 <section id="order" class="sec">
   <div class="wrap">
     <div class="order-grid">
-      <div class="rv">
-        <div class="sec-label" style="margin-bottom:1.5rem">Place an order</div>
-        <h2 class="sec-title" style="margin-bottom:1.5rem" id="secOrderTitle">Tell us what<br/>you need.</h2>
-        <p style="color:var(--dim);line-height:1.8;margin-bottom:2rem;font-size:0.95rem" id="secOrderDesc">Fill the brief below and we'll reply with a quote and timeline within hours. For files over 25 MB, drop a WeTransfer or Drive link in the notes.</p>
-        <div style="display:flex;flex-direction:column;gap:0.75rem">
-          <div class="tick">Free quote within hours</div>
-          <div class="tick">Two revision rounds included</div>
-          <div class="tick">Rush delivery available</div>
-          <div class="tick">NDA on request</div>
+      <!-- Left Bento Column -->
+      <div class="order-bento">
+        <div class="order-bento-title rv">
+          <div class="sec-label">Place an order</div>
+          <h2 id="secOrderTitle">Tell us what<br/>you need.</h2>
+          <p id="secOrderDesc">Fill the brief and we'll reply with a quote and timeline within hours.</p>
+        </div>
+        <div class="order-bento-steps rv">
+          <div class="ob-step">
+            <div class="ob-step-num">01</div>
+            <div class="ob-step-text"><h4>Share Brief</h4><p>Tell us scope, references, and deadline.</p></div>
+          </div>
+          <div class="ob-step">
+            <div class="ob-step-num">02</div>
+            <div class="ob-step-text"><h4>Get Quote</h4><p>We reply with pricing within hours.</p></div>
+          </div>
+          <div class="ob-step">
+            <div class="ob-step-num">03</div>
+            <div class="ob-step-text"><h4>Receive Files</h4><p>Polished deliverables, ready to use.</p></div>
+          </div>
+        </div>
+        <div class="order-bento-trust rv">
+          <div class="ob-trust-num">500+</div>
+          <div class="ob-trust-text">Projects delivered across 50+ cities with 98% client retention.</div>
+        </div>
+        <div class="order-bento-live rv" id="liveCard">
+          <div class="ob-live-head">
+            <div class="ob-live-badge">Live Preview</div>
+            <div class="ob-live-status" id="liveStatus">awaiting input...</div>
+          </div>
+          <div class="ob-live-grid">
+            <div class="ob-live-field"><div class="ob-live-label">Client</div><div class="ob-live-val empty" id="liveName">Your name</div></div>
+            <div class="ob-live-field"><div class="ob-live-label">Service</div><div class="ob-live-val empty" id="liveService">Not selected</div></div>
+            <div class="ob-live-field"><div class="ob-live-label">Deadline</div><div class="ob-live-val empty" id="liveDeadline">Not selected</div></div>
+            <div class="ob-live-field"><div class="ob-live-label">Budget</div><div class="ob-live-val empty" id="liveBudget">Not selected</div></div>
+          </div>
+          <div class="ob-live-divider"></div>
+          <div class="ob-live-foot">
+            <div class="ob-live-avatar" id="liveAvatar"><span>?</span></div>
+            <div class="ob-live-project" id="liveProject">Fill the form to preview your project summary</div>
+          </div>
         </div>
       </div>
+
+      <!-- Glassmorphism Form Card -->
       <form id="orderForm" class="order-form rv">
-        <div class="order-timeline" id="orderTimeline">
-          <div class="tl-step active" id="tl1">
-            <div class="tl-dot">📝</div>
-            <div class="tl-label">Brief</div>
-            <div class="tl-time">Now</div>
-          </div>
-          <div class="tl-step" id="tl2">
-            <div class="tl-dot">💬</div>
-            <div class="tl-label">Quote</div>
-            <div class="tl-time">~2 hrs</div>
-          </div>
-          <div class="tl-step" id="tl3">
-            <div class="tl-dot">🎨</div>
-            <div class="tl-label">Editing</div>
-            <div class="tl-time">1–3 days</div>
-          </div>
-          <div class="tl-step" id="tl4">
-            <div class="tl-dot">🔍</div>
-            <div class="tl-label">Review</div>
-            <div class="tl-time">Revisions</div>
-          </div>
-          <div class="tl-step" id="tl5">
-            <div class="tl-dot">✅</div>
-            <div class="tl-label">Deliver</div>
-            <div class="tl-time">Final files</div>
-          </div>
+        <!-- Step Indicator -->
+        <div class="order-steps" id="orderSteps">
+          <div class="os-step active" data-step="1"><div class="os-num">1</div><span class="os-label">You</span></div>
+          <div class="os-step" data-step="2"><div class="os-num">2</div><span class="os-label">Project</span></div>
+          <div class="os-step" data-step="3"><div class="os-num">3</div><span class="os-label">Brief</span></div>
         </div>
-        <div class="ff-row">
+
+        <!-- Step 1: Your Details -->
+        <div class="order-step-panel active" data-panel="1">
+          <div class="order-step-head">
+            <h3>Your Details</h3>
+            <p>How can we reach you?</p>
+          </div>
           <div class="ff"><label>Your name</label><input name="name" required placeholder="Jane Doe" autocapitalize="words" autocorrect="off" /></div>
           <div class="ff"><label>Email</label><input name="email" required type="email" placeholder="you@studio.com" inputmode="email" autocorrect="off" /></div>
+          <div class="ff"><label>Phone (optional)</label><input name="phone" type="tel" placeholder="+91 98765 43210" inputmode="tel" /></div>
+          <div class="order-nav">
+            <button type="button" class="btn order-nav-next" onclick="nextOrderStep(2)">Continue →</button>
+          </div>
         </div>
-        <div class="ff"><label>Phone (optional)</label><input name="phone" type="tel" placeholder="+91 98765 43210" inputmode="tel" /></div>
-        <div class="ff"><label>Service</label><select name="service" required><option value="" disabled selected>Choose a service...</option><option>Poster editing</option><option>Video editing</option><option>Document editing</option><option>Mixed / not sure yet</option></select></div>
-        <div class="ff-row">
+
+        <!-- Step 2: Project Info -->
+        <div class="order-step-panel" data-panel="2">
+          <div class="order-step-head">
+            <h3>Project Info</h3>
+            <p>What do you need edited?</p>
+          </div>
+          <div class="ff"><label>Service</label><select name="service" required><option value="" disabled selected>Choose a service...</option><option>Poster editing</option><option>Video editing</option><option>Document editing</option><option>Mixed / not sure yet</option></select></div>
           <div class="ff"><label>Deadline</label><select name="deadline" required><option value="" disabled selected>How soon?</option><option>Rush — within 24h</option><option>Within 3 days</option><option>Within a week</option><option>Flexible</option></select></div>
           <div class="ff"><label>Budget (INR)</label><select name="budget" required><option value="" disabled selected>Pick a range...</option><option>₹15 – ₹20</option><option>₹20 – ₹25</option><option>₹25 – ₹50</option><option>₹50+</option><option>Not sure yet</option></select></div>
-        </div>
-        <div class="ff brief-assist">
-          <label>Project brief</label>
-          <textarea name="brief" id="briefInput" rows="5" required placeholder="Tell us about the scope, references, file links, and anything that matters." style="min-height:130px;resize:vertical"></textarea>
-          <div class="brief-suggestions" id="briefSuggestions">
-            <div class="brief-sug-header">AI Recommendations</div>
-            <div id="briefSugList"></div>
+          <div class="order-nav">
+            <button type="button" class="btn order-nav-back" onclick="nextOrderStep(1)">← Back</button>
+            <button type="button" class="btn order-nav-next" onclick="nextOrderStep(3)">Continue →</button>
           </div>
         </div>
-        <button type="submit" class="btn btn-acc" style="width:100%;justify-content:center">Send brief →</button>
-        <p style="font-size:0.65rem;color:var(--muted);text-align:center">Opens your email client. No data stored.</p>
-        <div style="text-align:center;margin-top:0.5rem"><a href="https://wa.me/918129021975?text=Hi%20Cheditz!%20I%27d%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" style="font-size:0.7rem;color:#25D366;text-decoration:none">💬 Or chat on WhatsApp</a></div>
-        <div class="live-card" id="liveCard">
-          <div class="live-card-header">
-            <div class="live-card-badge">Live Preview</div>
-            <div class="live-card-status" id="liveStatus">awaiting input...</div>
+
+        <!-- Step 3: Brief -->
+        <div class="order-step-panel" data-panel="3">
+          <div class="order-step-head">
+            <h3>Your Brief</h3>
+            <p>Describe your project scope and references.</p>
           </div>
-          <div class="live-card-grid">
-            <div class="live-card-field">
-              <div class="live-card-label">Client</div>
-              <div class="live-card-value empty" id="liveName">Your name</div>
-            </div>
-            <div class="live-card-field">
-              <div class="live-card-label">Service</div>
-              <div class="live-card-value empty" id="liveService">Not selected</div>
-            </div>
-            <div class="live-card-field">
-              <div class="live-card-label">Deadline</div>
-              <div class="live-card-value empty" id="liveDeadline">Not selected</div>
-            </div>
-            <div class="live-card-field">
-              <div class="live-card-label">Budget</div>
-              <div class="live-card-value empty" id="liveBudget">Not selected</div>
+          <div class="ff brief-assist">
+            <label>Project brief</label>
+            <textarea name="brief" id="briefInput" rows="5" required placeholder="Tell us about the scope, references, file links, and anything that matters." style="min-height:130px;resize:vertical"></textarea>
+            <div class="brief-suggestions" id="briefSuggestions">
+              <div class="brief-sug-header">AI Recommendations</div>
+              <div id="briefSugList"></div>
             </div>
           </div>
-          <div class="live-card-divider"></div>
-          <div class="live-card-footer">
-            <div class="live-card-avatar" id="liveAvatar"><span>?</span></div>
-            <div class="live-card-project" id="liveProject">Fill the form to preview your project summary</div>
+          <button type="submit" class="order-submit-btn">Send brief →</button>
+          <div class="order-nav">
+            <button type="button" class="btn order-nav-back" onclick="nextOrderStep(2)">← Back</button>
+          </div>
+          <div class="order-form-footer">
+            <p>Opens your email client. No data stored.</p>
+            <a href="https://wa.me/918129021975?text=Hi%20Cheditz!%20I%27d%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer">💬 Or chat on WhatsApp</a>
           </div>
         </div>
       </form>
@@ -2292,42 +2344,39 @@ function sendChat(){const input=document.getElementById('chatInput');const text=
 function matchResponse(input){const lower=input.toLowerCase();for(const item of chatResponses){if(item.k.some(kw=>lower.includes(kw)))return item.r;}return defaultResponse}
 function getFollowUps(lastInput){const lower=lastInput.toLowerCase();if(lower.match(/price|cost|rate|charge|budget/))return['Order now','Services','Turnaround time','Rush delivery'];if(lower.match(/poster|flyer|banner|design|social post/))return['Pricing','Order now','Turnaround time','File upload'];if(lower.match(/video|reel|youtube|short|film/))return['Pricing','Order now','Colour grading','Motion graphics'];if(lower.match(/document|pdf|resume|thesis|deck/))return['Pricing','Order now','File upload','Student services'];if(lower.match(/wedding|birthday|event|function/))return['Pricing','Order now','Turnaround time','Photo editing'];if(lower.match(/order|brief|start/))return['Pricing','File upload','Contact','Turnaround time'];if(lower.match(/contact|email|instagram|phone/))return['Services','Order now','About'];if(lower.match(/tool|calculator|palette|compare/))return['Pricing','Services','Order now'];if(lower.match(/trend|style|popular/))return['Services','Order now','Pricing','Instagram'];if(lower.match(/portfolio|work|example|sample/))return['Services','Order now','Pricing'];if(lower.match(/about|who|what is/))return['Services','Portfolio','Contact'];if(lower.match(/payment|pay|advance/))return['Order now','Pricing','Contact'];if(lower.match(/quality|professional|best/))return['Services','Portfolio','Order now'];if(lower.match(/rush|urgent|fast|asap/))return['Order now','Pricing','Turnaround time'];if(lower.match(/compare|difference|vs|which/))return['Order now','Pricing','Services'];if(lower.match(/thank|thanks/))return['Order now','Tools','Contact'];if(lower.match(/help|assist|support/))return['Pricing','Services','Order now','Contact'];if(lower.match(/instagram|insta|reel|story/))return['Pricing','Order now','Motion graphics'];if(lower.match(/youtube|channel|video/))return['Pricing','Order now','Colour grading'];if(lower.match(/logo|brand|identity/))return['Services','Order now','Contact'];if(lower.match(/colour|color|grading|tone/))return['Video editing','Order now','Services'];if(lower.match(/motion|animation|title/))return['Video editing','Order now','Pricing'];if(lower.match(/sound|audio|music/))return['Video editing','Order now','Services'];if(lower.match(/social|media|facebook|tiktok/))return['Instagram','YouTube','Order now','Pricing'];if(lower.match(/photo|retouch|enhance/))return['Pricing','Order now','File upload'];if(lower.match(/student|thesis|academic/))return['Document editing','Pricing','Order now'];if(lower.match(/business|company|corporate/))return['Services','Order now','Pricing'];if(lower.match(/wedding|bride|groom/))return['Pricing','Order now','Photo editing'];return['Pricing','Services','Order now','Contact','Tools']}
 
-// ===== ORDER TIMELINE =====
-(function(){
+// ===== ORDER STEP NAVIGATION =====
+let currentOrderStep=1;
+function nextOrderStep(step){
   const form=document.getElementById('orderForm');
-  const timeline=document.getElementById('orderTimeline');
-  if(!form||!timeline)return;
-  const nameInput=form.querySelector('[name="name"]');
-  const emailInput=form.querySelector('[name="email"]');
-  const serviceSelect=form.querySelector('[name="service"]');
-  const deadlineSelect=form.querySelector('[name="deadline"]');
-  const budgetSelect=form.querySelector('[name="budget"]');
-  const briefInput=form.querySelector('[name="brief"]');
-  function updateTimeline(){
-    const name=(nameInput.value||'').trim();
-    const email=(emailInput.value||'').trim();
-    const service=serviceSelect.value;
-    const deadline=deadlineSelect.value;
-    const budget=budgetSelect.value;
-    const brief=(briefInput.value||'').trim();
-    let step=1;
-    if(name.length>=2&&email.length>=5)step=2;
-    if(step>=2&&service)step=3;
-    if(step>=3&&deadline)step=4;
-    if(step>=4&&budget&&brief.length>=10)step=5;
-    timeline.className='order-timeline step-'+step;
-    for(let i=1;i<=5;i++){
-      const el=document.getElementById('tl'+i);
-      el.classList.remove('active','done');
-      if(i<step)el.classList.add('done');
-      else if(i===step)el.classList.add('active');
+  const panels=form.querySelectorAll('.order-step-panel');
+  const steps=form.querySelectorAll('.os-step');
+
+  // Validate current step before advancing
+  if(step>currentOrderStep){
+    const currentPanel=form.querySelector('.order-step-panel[data-panel="'+currentOrderStep+'"]');
+    const required=currentPanel.querySelectorAll('[required]');
+    let valid=true;
+    required.forEach(function(input){
+      if(!input.value.trim()){valid=false;input.closest('.ff').classList.add('error')}
+      else{input.closest('.ff').classList.remove('error')}
+    });
+    if(currentOrderStep===1){
+      const email=currentPanel.querySelector('[type="email"]');
+      if(email&&email.value&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){valid=false;email.closest('.ff').classList.add('error')}
     }
+    if(!valid)return;
   }
-  [nameInput,emailInput,serviceSelect,deadlineSelect,budgetSelect,briefInput].forEach(function(el){
-    el.addEventListener('input',updateTimeline);
-    el.addEventListener('change',updateTimeline);
+
+  currentOrderStep=step;
+  panels.forEach(function(p){p.classList.remove('active')});
+  steps.forEach(function(s,i){
+    s.classList.remove('active','done');
+    if(i+1<step)s.classList.add('done');
+    else if(i+1===step)s.classList.add('active');
   });
-})();
+  const target=form.querySelector('.order-step-panel[data-panel="'+step+'"]');
+  if(target)target.classList.add('active');
+}
 
 // ===== LIVE PROJECT CARD =====
 (function(){
@@ -2400,12 +2449,13 @@ function calcQtyBtn(dir){
 function calcPrice(){
   const qty=Math.max(1,parseInt(document.getElementById('calcQty').value)||1);
   const rates={poster:17,video:22,document:2};
+  const rushFee={poster:10,video:10,document:3};
   const units={poster:'poster',video:'minute',document:'word'};
   const unitPlural={poster:'posters',video:'minutes',document:'words'};
   let total=rates[calcService]*qty;
-  if(calcRush)total=50*qty;
+  if(calcRush)total+=rushFee[calcService]*qty;
   const label=qty>1?unitPlural[calcService]:units[calcService];
-  const delivery=calcRush?'rush delivery':'standard delivery';
+  const delivery=calcRush?'rush delivery (+₹'+rushFee[calcService]+'/item)':'standard delivery';
   document.getElementById('calcTotal').textContent='₹'+total.toLocaleString('en-IN');
   document.getElementById('calcBreakdown').textContent=qty+' '+label+' · '+delivery;
 }
