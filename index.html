@@ -1806,7 +1806,7 @@ body:hover .cursor-glow{opacity:1}
 <!-- FOOTER -->
 <footer>
   <div class="wrap">
-    <span style="font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:0.5rem">
+    <span id="footMark" style="font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:0.5rem">
       <img src="b_Enhance_the_image_to-removebg-preview.png" alt="Cheditz" style="height:24px" decoding="async" />
       &copy; 2026 Cheditz.
     </span>
@@ -3046,8 +3046,34 @@ document.querySelectorAll('form').forEach(f=>{const hp=document.createElement('d
 // ===== SECURITY: FORM INPUT LENGTH ENFORCEMENT =====
 document.querySelectorAll('input[maxlength],textarea[maxlength]').forEach(el=>{el.addEventListener('input',function(){if(this.maxLength>0&&this.value.length>this.maxLength){this.value=this.value.slice(0,this.maxLength);}});});
 
-// ===== ADMIN ACCESS: Ctrl+Shift+A =====
-document.addEventListener('keydown',function(e){if(e.ctrlKey&&e.shiftKey&&e.key==='A'){e.preventDefault();window.location.href='admin.html';}});
+// ===== ADMIN ACCESS: Ctrl+Shift+E =====
+document.addEventListener('keydown',function(e){
+  if(!e.ctrlKey||!e.shiftKey)return;
+  const k=(e.key||'').toLowerCase();
+  if(k!=='e')return;
+  const t=e.target;
+  if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable))return;
+  e.preventDefault();
+  window.location.href='admin.html?key='+atob('Y2h6N2s5cTI=');
+});
+
+// ===== ADMIN ACCESS (phone/touch): tap footer logo 5x within 1.2s =====
+(function(){
+  const mark=document.getElementById('footMark');
+  if(!mark)return;
+  let taps=0,timer=null;
+  mark.addEventListener('click',function(e){
+    taps++;
+    if(timer)clearTimeout(timer);
+    if(taps>=5){
+      taps=0;clearTimeout(timer);timer=null;
+      e.preventDefault();
+      window.location.href='admin.html?key='+atob('Y2h6N2s5cTI=');
+      return;
+    }
+    timer=setTimeout(function(){taps=0;timer=null;},1200);
+  });
+})();
 
 // ===== SECURITY: CLICKJACKING PROTECTION =====
 if(window.top!==window.self){window.top.location=window.self.location;}

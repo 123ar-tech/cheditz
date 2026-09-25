@@ -583,6 +583,18 @@
 </div>
 
 <script>
+// ===== ACCESS GATE: secret URL key =====
+(function(){
+  var want=atob('Y2h6N2s5cTI=');
+  var ok=false;
+  try{
+    var q=new URLSearchParams(location.search);
+    var k=q.get('key')||'';
+    if(k&&k===want){ok=true;sessionStorage.setItem('cheditz_key_ok','1');}
+    else if(sessionStorage.getItem('cheditz_key_ok')==='1'){ok=true;}
+  }catch(e){ok=true;}
+  if(!ok){location.replace('index.html');throw new Error('access denied');}
+})();
 // ===== FIREBASE CONFIG (obfuscated) =====
 const _0xf=[decodeURIComponent('%37%39%32%37%38%31%32%36%30%33%31'),decodeURIComponent('%63%68%65%64%69%74%7A%2D%64%65%65%32%35'),decodeURIComponent('%63%68%65%64%69%74%7A%2D%64%65%65%32%35%2E%66%69%72%65%62%61%73%65%73%74%6F%72%61%67%65%2E%61%70%70')];
 const _0xk=atob('QUl6YVN5QzJDVkRLVkxTWEVPdHl1eE9lSlhoaWpiUTJ4MDhvZHdr');
