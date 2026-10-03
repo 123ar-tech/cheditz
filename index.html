@@ -570,6 +570,10 @@ img{max-width:100%;display:block}
 .chat-msg.user{background:var(--acc);color:var(--bg);align-self:flex-end;border-bottom-right-radius:4px}
 .chat-msg a{color:inherit;text-decoration:underline}
 .chat-msg strong{color:var(--txt);font-weight:600}
+.chat-row{display:flex;align-items:flex-end;gap:0.5rem;max-width:85%;animation:msgIn .3s ease}
+.chat-row .chat-msg{align-self:flex-end;max-width:calc(100% - 34px);animation:none}
+.chat-msg-avatar{width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--acc);border:1px solid var(--edge)}
+.chat-msg-avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
 .chat-typing{display:flex;gap:4px;padding:0.5rem 0.75rem;align-self:flex-start}
 .chat-typing span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:typing 1.2s infinite}
 .chat-typing span:nth-child(2){animation-delay:.2s}
@@ -2298,7 +2302,7 @@ setTimeout(()=>{const pop=document.getElementById('chatPop');if(pop&&!chatOpen)p
 document.getElementById('chatPop').addEventListener('click',()=>{toggleChat()});
 function toggleChat(){chatOpen=!chatOpen;document.getElementById('chatWindow').classList.toggle('open',chatOpen);document.getElementById('chatFab').classList.toggle('open',chatOpen);if(chatOpen&&!chatInit){chatInit=true;initChat()}}
 function initChat(){addBotMsg("Hey there! 👋 So glad you stopped by — I'm <strong>Cheditz AI</strong>, and I'm your assistant here.\n\nI can help you with pricing, services, ordering, and project tips. What would you like to know? 😊");showSugs(sugs)}
-function addBotMsg(text){const msgs=document.getElementById('chatMessages');const div=document.createElement('div');div.className='chat-msg bot';div.innerHTML=text.replace(/\n/g,'<br>');msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight}
+function addBotMsg(text){const msgs=document.getElementById('chatMessages');const row=document.createElement('div');row.className='chat-row bot';const av=document.createElement('div');av.className='chat-msg-avatar';av.innerHTML='<img src="favicon.png" alt="Cheditz" decoding="async" loading="lazy"/>';const div=document.createElement('div');div.className='chat-msg bot';div.innerHTML=text.replace(/\n/g,'<br>');row.appendChild(av);row.appendChild(div);msgs.appendChild(row);msgs.scrollTop=msgs.scrollHeight}
 function addUserMsg(text){const msgs=document.getElementById('chatMessages');const div=document.createElement('div');div.className='chat-msg user';div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight}
 function showSugs(arr){const wrap=document.getElementById('chatSugs');wrap.innerHTML='';arr.forEach(s=>{const btn=document.createElement('button');btn.className='chat-sug';btn.textContent=s;btn.onclick=()=>{document.getElementById('chatInput').value=s;sendChat()};wrap.appendChild(btn)})}
 function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;input.value='';addUserMsg(text);document.getElementById('chatSugs').innerHTML='';document.getElementById('chatSend').disabled=true;const typing=document.createElement('div');typing.className='chat-typing';typing.innerHTML='<span></span><span></span><span></span>';document.getElementById('chatMessages').appendChild(typing);document.getElementById('chatMessages').scrollTop=document.getElementById('chatMessages').scrollHeight;setTimeout(()=>{typing.remove();document.getElementById('chatSend').disabled=false;const response=matchResponse(text);addBotMsg(response);showSugs(getFollowUps(text))},600+Math.random()*800)}
